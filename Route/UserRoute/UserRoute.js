@@ -35,7 +35,7 @@ router.put("/reset-password/:token", resetPassword);
 
 router.put("/password", authMiddleware, updatePassword);
 router.post("/login", loginUserCtrl);
-router.post("/veriyfyotp", veriyfyotp);
+router.post("/verifyotp", veriyfyotp);
 router.post("/admin-login", loginAdmin);
 router.post("/cart", authMiddleware, userCart);
 router.post("/cart/applycoupon", authMiddleware, applyCoupon);
