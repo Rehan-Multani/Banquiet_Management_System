@@ -57,7 +57,7 @@ const createbooking = async (req, res) => {
       AdminRemark,
     } = req.body;
     //check if user already exists
-    const exists = await bookingModel.findOne({ email: Email });
+    const exists = await bookingModel.findOne({ Email: Email });
     if (exists) {
       return res.status(400).json({ message: "you  are already Booked" });
     }
@@ -112,9 +112,9 @@ const createbooking = async (req, res) => {
 
 //get user info
 const getBooking = async (req, res) => {
-  const id = req.user.id;
+
   try {
-    const user = await bookingModel.find({ _id: id });
+    const user = await bookingModel.find({ _id: req.body.email });
     res.status(200).json({ user: user[0] });
   } catch (error) {
     res.status(502).json({ message: error.message });
