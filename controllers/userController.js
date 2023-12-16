@@ -12,6 +12,7 @@ const createToken = (id) => {
 
 //login user
 const loginUser = async (req, res) => {
+  // console.log("data", req.body);
   const { email, password } = req.body;
   try {
     if (!email || !password) {
@@ -23,11 +24,12 @@ const loginUser = async (req, res) => {
       return res.status(400).json({ message: "User does not exist" });
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch =  bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
     const token = createToken(user._id);
+    console.log("datatoken", token)
     res.status(200).json({ user, token });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -36,7 +38,7 @@ const loginUser = async (req, res) => {
 
 //register user
 const registerUser = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, companyname, companyid, contact, role, password } = req.body;
   try {
     //check if user already exists
     const exists = await userModel.findOne({ email });
@@ -46,6 +48,10 @@ const registerUser = async (req, res) => {
     if (
       validator.isEmpty(name) ||
       validator.isEmpty(email) ||
+      validator.isEmpty(companyname) ||
+      validator.isEmpty(companyid) ||
+      validator.isEmpty(contact) ||
+      validator.isEmpty(role) ||
       validator.isEmpty(password)
     ) {
       return res.status(400).json({ message: "Please enter all fields" });
@@ -61,7 +67,7 @@ const registerUser = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const newUser = new userModel({ name, email, password: hashedPassword });
+    const newUser = new userModel({ name, email, companyname, companyid, contact, role, password: hashedPassword });
     const user = await newUser.save();
     const token = createToken(user._id);
     res.status(200).json({ user, token });

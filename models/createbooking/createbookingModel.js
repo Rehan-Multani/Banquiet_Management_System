@@ -21,3 +21,26 @@ const bookingSchema = new mongoose.Schema({
 
 const bookingModel = mongoose.model("booking", bookingSchema);
 export default bookingModel;
+
+
+
+
+// {
+//   "customername":"rahul",
+//   "mobilenumber":"9898989898",
+//   "email":"rahul@gmail.com",
+//   "bookingfrom":"djak",
+//   "timestart":"22",
+//   "bookingto":"30",
+//   "timeend":"ijl",
+//   "numberofguest":"wae",
+//   "eventtypes":"radsadashul",
+//   "message":"dsads",
+//   "servicename":"dsa",
+//   "servicedescription":"dsad",
+//   "serviceprice":"wseds",
+//   "applydate":"weqes",
+//   "orderfinalstatus":"wqe",
+//   "adminremark":"ewqe"
+
+// }

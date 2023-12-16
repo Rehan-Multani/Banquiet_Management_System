@@ -65,6 +65,7 @@ const createbooking = async (req, res) => {
       validator.isEmpty(customername) ||
       validator.isEmpty(mobilenumber) ||
       validator.isEmpty(bookingfrom) ||
+      // validator.isEmpty(email) ||
       validator.isEmpty(timestart) ||
       validator.isEmpty(bookingto) ||
       validator.isEmpty(timeend) ||
@@ -102,7 +103,7 @@ const createbooking = async (req, res) => {
       serviceprice,
       applydate,
       orderfinalstatus,
-      adminremark,
+      adminremark
     });
     const booking = await newBooking.save();
 
@@ -121,6 +122,7 @@ const getBooking = async (req, res) => {
     res.status(502).json({success:false, message: error.message });
   }
 };
+
 const updateBooking = async (req, res) => {
   try {
     const { id } = req.params._id;
