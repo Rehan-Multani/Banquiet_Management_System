@@ -4,9 +4,9 @@ import {
   getBooking,
 } from "../../controllers/createBookingController/createBookingController.js";
 import requireAuth from "../../middleware/requireAuth.js";
-const bookingRouter = express.Router();
+const router = express.Router();
 
 router.post("/createbooking", requireAuth, createbooking);
 router.get("/getuser", requireAuth, getBooking);
 
-export default bookingRouter;
+export default router;

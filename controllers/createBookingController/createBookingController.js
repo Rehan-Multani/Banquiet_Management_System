@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 
 import validator from "validator";
 
-import bookingModel from "../../models/createbooking/createbookingModel";
+import bookingModel from "../../models/createbooking/createbookingModel.js";
 
 //create token
 const createToken = (id) => {
@@ -120,4 +120,4 @@ const getBooking = async (req, res) => {
     res.status(502).json({ message: error.message });
   }
 };
-export default { createbooking, getBooking };
+export  { createbooking, getBooking };
