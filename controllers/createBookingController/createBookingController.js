@@ -59,7 +59,9 @@ const createbooking = async (req, res) => {
     //check if user already exists
     const exists = await bookingModel.findOne({ email: email });
     if (exists) {
-      return res.status(400).json({success:false, message: "you  are already Booked" });
+      return res
+        .status(400)
+        .json({ success: false, message: "you  are already Booked" });
     }
     if (
       validator.isEmpty(customername) ||
@@ -78,12 +80,15 @@ const createbooking = async (req, res) => {
       validator.isEmpty(orderfinalstatus) ||
       validator.isEmpty(adminremark)
     ) {
-      return res
-        .status(400)
-        .json({success:false, message: "Please provide full details for all fields" });
+      return res.status(400).json({
+        success: false,
+        message: "Please provide full details for all fields",
+      });
     }
     if (!validator.isEmail(email)) {
-      return res.status(400).json({success:false, message: "Please enter a valid email" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Please enter a valid email" });
     }
 
     const newBooking = new bookingModel({
@@ -106,9 +111,9 @@ const createbooking = async (req, res) => {
     });
     const booking = await newBooking.save();
 
-    res.status(200).json({success:true, booking });
+    res.status(200).json({ success: true, booking });
   } catch (error) {
-    res.status(500).json({success:false, message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -116,9 +121,9 @@ const createbooking = async (req, res) => {
 const getBooking = async (req, res) => {
   try {
     const user = await bookingModel.find({ _id: req.body.email });
-    res.status(200).json({success:true, user: user[0] });
+    res.status(200).json({ success: true, user: user[0] });
   } catch (error) {
-    res.status(502).json({success:false, message: error.message });
+    res.status(502).json({ success: false, message: error.message });
   }
 };
 const updateBooking = async (req, res) => {
