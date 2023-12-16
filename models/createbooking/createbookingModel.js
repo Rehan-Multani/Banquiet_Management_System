@@ -1,22 +1,22 @@
 import mongoose from "mongoose";
 
 const bookingSchema = new mongoose.Schema({
-  CustomerName: { type: String, required: true },
-  MobileNumber: { type: String },
-  Email: { type: String, required: true, unique: true },
-  BookingFrom: { type: String },
-  TimeStart: { type: String },
-  BookingTo: { type: String },
-  TimeEnd: { type: String },
-  NumberOfGuest: { type: String },
-  EventTypes: { type: String },
-  Message: { type: String },
-  ServiceName: { type: String },
-  ServiceDescription: { type: String },
-  ServicePrice: { type: String },
-  ApplyDate: { type: String },
-  OrderFinalStatus: { type: String },
-  AdminRemark: { type: String },
+  customername: { type: String, required: true },
+  mobilenumber: { type: String },
+  email: { type: String, required: true, unique: true },
+  bookingfrom: { type: String },
+  timestart: { type: String },
+  bookingto: { type: String },
+  timeend: { type: String },
+  numberofguest: { type: String },
+  eventtypes: { type: String },
+  message: { type: String },
+  servicename: { type: String },
+  servicedescription: { type: String },
+  serviceprice: { type: String },
+  applydate: { type: String },
+  orderfinalstatus: { type: String },
+  adminremark: { type: String },
 });
 
 const bookingModel = mongoose.model("booking", bookingSchema);

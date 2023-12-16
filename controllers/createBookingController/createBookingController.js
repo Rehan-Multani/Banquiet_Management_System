@@ -40,67 +40,70 @@ const createToken = (id) => {
 const createbooking = async (req, res) => {
   try {
     let {
-      MobileNumber,
-      Email,
-      BookingFrom,
-      TimeStart,
-      BookingTo,
-      TimeEnd,
-      NumberOfGuest,
-      EventTypes,
-      Message,
-      ServiceName,
-      ServiceDescription,
-      ServicePrice,
-      ApplyDate,
-      OrderFinalStatus,
-      AdminRemark,
+      customername,
+      mobilenumber,
+      email,
+      bookingfrom,
+      timestart,
+      bookingto,
+      timeend,
+      numberofguest,
+      eventtypes,
+      message,
+      servicename,
+      servicedescription,
+      serviceprice,
+      applydate,
+      orderfinalstatus,
+      adminremark,
     } = req.body;
     //check if user already exists
-    const exists = await bookingModel.findOne({ Email: Email });
+    const exists = await bookingModel.findOne({ email: email });
     if (exists) {
       return res.status(400).json({ message: "you  are already Booked" });
     }
     if (
-      validator.isEmpty(MobileNumber) ||
-      validator.isEmpty(BookingFrom) ||
-      validator.isEmpty(TimeStart) ||
-      validator.isEmpty(BookingTo) ||
-      validator.isEmpty(TimeEnd) ||
-      validator.isEmpty(NumberOfGuest) ||
-      validator.isEmpty(EventTypes) ||
-      validator.isEmpty(Message) ||
-      validator.isEmpty(ServiceName) ||
-      validator.isEmpty(ServiceDescription) ||
-      validator.isEmpty(ServicePrice) ||
-      validator.isEmpty(ApplyDate) ||
-      validator.isEmpty(OrderFinalStatus) ||
-      validator.isEmpty(AdminRemark)
+      validator.isEmpty(customername) ||
+      validator.isEmpty(mobilenumber) ||
+      validator.isEmpty(bookingfrom) ||
+      validator.isEmpty(timestart) ||
+      validator.isEmpty(bookingto) ||
+      validator.isEmpty(timeend) ||
+      validator.isEmpty(numberofguest) ||
+      validator.isEmpty(eventtypes) ||
+      validator.isEmpty(message) ||
+      validator.isEmpty(servicename) ||
+      validator.isEmpty(servicedescription) ||
+      validator.isEmpty(serviceprice) ||
+      validator.isEmpty(applydate) ||
+      validator.isEmpty(orderfinalstatus) ||
+      validator.isEmpty(adminremark)
     ) {
       return res
         .status(400)
         .json({ message: "Please provide full details for all fields" });
     }
-    if (!validator.isEmail(Email)) {
+    if (!validator.isEmail(email)) {
       return res.status(400).json({ message: "Please enter a valid email" });
     }
 
     const newBooking = new bookingModel({
-      MobileNumber,
-      Email,
-      BookingFrom,
-      TimeStart,
-      BookingTo,
-      TimeEnd,
-      NumberOfGuest,
-      EventTypes,
-      Message,
-      ServiceName,
-      ServiceDescription,
-      ServicePrice,
-      ApplyDate,
-      OrderFinalStatus,
-      AdminRemark,
+      customername,
+      mobilenumber,
+      email,
+      bookingfrom,
+      timestart,
+      bookingto,
+      timeend,
+      numberofguest,
+      eventtypes,
+      message,
+      servicename,
+      servicedescription,
+      serviceprice,
+      applydate,
+      orderfinalstatus,
+      adminremark,
     });
     const booking = await newBooking.save();
 
