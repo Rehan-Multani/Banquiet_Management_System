@@ -1,9 +1,9 @@
-import userModel from "../models/userModel.js";
+
 import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
+
 import validator from "validator";
 
-import bookingModel from "./../../models/createbooking/createbookingModel";
+import bookingModel from "../../models/createbooking/createbookingModel";
 
 //create token
 const createToken = (id) => {
@@ -120,4 +120,4 @@ const getBooking = async (req, res) => {
     res.status(502).json({ message: error.message });
   }
 };
-export { createbooking, getBooking };
+export default { createbooking, getBooking };
