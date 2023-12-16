@@ -121,8 +121,8 @@ const createbooking = async (req, res) => {
 //get user info
 const getsingleBooking = async (req, res) => {
   try {
-    const user = await bookingModel.find({ _id: req.params.id });
-    res.status(200).json({ success: true, user: user[0] });
+    const user = await bookingModel.findOne({ _id: req.params.id });
+    res.status(200).json({ success: true, user });
   } catch (error) {
     res.status(502).json({ success: false, message: error.message });
   }
