@@ -1,4 +1,3 @@
-
 import jwt from "jsonwebtoken";
 
 import validator from "validator";
@@ -115,7 +114,6 @@ const createbooking = async (req, res) => {
 
 //get user info
 const getBooking = async (req, res) => {
-
   try {
     const user = await bookingModel.find({ _id: req.body.email });
     res.status(200).json({success:true, user: user[0] });
@@ -123,4 +121,15 @@ const getBooking = async (req, res) => {
     res.status(502).json({success:false, message: error.message });
   }
 };
-export  { createbooking, getBooking };
+const updateBooking = async (req, res) => {
+  try {
+    const { id } = req.params._id;
+    const exists = await bookingModel.findByIdAndUpdate({ _id: id }, req.body);
+    if (exists) {
+      res.status(200).json({ success: true, exists });
+    }
+  } catch (error) {
+    res.status(502).json({ message: error.message });
+  }
+};
+export { createbooking, getBooking, updateBooking };
