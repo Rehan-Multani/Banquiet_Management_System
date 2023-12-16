@@ -118,9 +118,9 @@ const createbooking = async (req, res) => {
 };
 
 //get user info
-const getBooking = async (req, res) => {
+const getsingleBooking = async (req, res) => {
   try {
-    const user = await bookingModel.find({ _id: req.body.email });
+    const user = await bookingModel.find({ _id: req.params.id });
     res.status(200).json({ success: true, user: user[0] });
   } catch (error) {
     res.status(502).json({ success: false, message: error.message });
@@ -137,4 +137,12 @@ const updateBooking = async (req, res) => {
     res.status(502).json({ message: error.message });
   }
 };
-export { createbooking, getBooking, updateBooking };
+const getBooking = async (req, res) => {
+  try {
+    const user = await bookingModel.find({});
+    res.status(200).json({ success: true, user });
+  } catch (error) {
+    res.status(502).json({ success: false, message: error.message });
+  }
+};
+export { createbooking, getBooking, updateBooking, getsingleBooking };
