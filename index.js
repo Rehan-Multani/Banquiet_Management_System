@@ -6,6 +6,7 @@ import dotenv from "dotenv"
 import userRouter from "./routes/userRoute.js"
 import taskRouter from "./routes/taskRoute.js"
 import forgotPasswordRouter from "./routes/forgotPassword.js"
+import bookingRouter from "./routes/createBookingRouter/createBookingRouter.js";
 
 //app config
 dotenv.config()
