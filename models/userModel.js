@@ -9,12 +9,11 @@ const userSchema = new mongoose.Schema({
   role: {
     type: String,
     default: "user",
-    enum: ["user", "waiter", "staff"],
+    enum: ["user", "waiter", "staff", "admin", "superadmin"],
   },
   password: { type: String, required: true, select: false },
   resetToken: { type: String, required: false },
-})
-
+});
 
 const userModel = mongoose.model("User", userSchema);
 export default userModel;
