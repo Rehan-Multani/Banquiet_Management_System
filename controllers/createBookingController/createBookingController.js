@@ -91,7 +91,7 @@ const createbooking = async (req, res) => {
 //get user info
 const getsingleBooking = async (req, res) => {
   try {
-    const user = await bookingModel.findOne({ _id: req.params.id });
+    const user = await bookingModel.findOne({ _id: req.params.id }).populate('user');
     res.status(200).json({ success: true, user });
   } catch (error) {
     res.status(502).json({ success: false, message: error.message });
@@ -114,7 +114,7 @@ const updateBooking = async (req, res) => {
 
 const getBooking = async (req, res) => {
   try {
-    const user = await bookingModel.find({});
+    const user = await bookingModel.find({}).populate('user');
     res.status(200).json({ success: true, user });
   } catch (error) {
     res.status(502).json({ success: false, message: error.message });

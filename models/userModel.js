@@ -11,7 +11,7 @@ const userSchema = new mongoose.Schema({
     default: "user",
     enum: ["user", "waiter", "staff"],
   },
-  password: { type: String, required: true },
+  password: { type: String, required: true, select: false },
   resetToken: { type: String, required: false },
 })
 

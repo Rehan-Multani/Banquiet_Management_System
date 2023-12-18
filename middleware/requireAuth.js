@@ -9,7 +9,6 @@ const requireAuth = async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
     req.token = token;
-    console.log(req.user);
     next();
   } catch (error) {
     return res.status(500).json({ message: error.message });
