@@ -6,7 +6,7 @@ import validator from "validator";
 //create token
 const createToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: 3 * 24 * 60 * 60,
+    expiresIn: '1h',
   });
 };
 
@@ -69,6 +69,7 @@ const registerUser = async (req, res) => {
 
     const newUser = new userModel({ name, email, companyname, companyid, contact, role, password: hashedPassword });
     const user = await newUser.save();
+    console.log(user.id)
     const token = createToken(user._id);
     res.status(200).json({ user, token });
   } catch (error) {

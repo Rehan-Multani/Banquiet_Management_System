@@ -5,8 +5,8 @@ import userModel from "../../models/userModel.js";
 const router = express.Router();
 
 // checking is user super Admin or not function
-const checkSuperAdmin = (req, res, next) => {
-  const isSuperAdmin = userModel.findById({ _id: req.user.id });
+const checkSuperAdmin =  async (req, res, next) => {
+  const isSuperAdmin = await userModel.findById({ _id: req.user.id });
 
   if (isSuperAdmin.role == "superadmin") {
     next();
@@ -18,6 +18,6 @@ const checkSuperAdmin = (req, res, next) => {
 };
 
 // routers
-router.post("/creation", requireAuth, checkSuperAdmin, creationrole);
+router.post("/creation/:id", requireAuth, checkSuperAdmin, creationrole);
 
 export default router;
