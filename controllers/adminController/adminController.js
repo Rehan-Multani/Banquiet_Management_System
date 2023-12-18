@@ -3,14 +3,22 @@ import userModel from "../../models/userModel.js";
 const creationrole = async (req, res) => {
   try {
     const updatecreationID = req.params.id;
+
     const ifupdated = await userModel.findByIdAndUpdate(updatecreationID, {
       role: req.body.role,
     });
-
-    res.status(200).send({
-      success: true,
-      message: `${req.body.role} is updated successfully..`,
-    });
+    console.log("ifupdated", ifupdated);
+    if(ifupdated){
+        res.status(200).send({
+            success: true,
+            message: `${req.body.role} is updated successfully..`,
+          });
+    }else{
+        res.status(401).send({
+            success: false,
+            message: `you are not authorized`,
+          });
+    }
   } catch (error) {
     res
       .status(500)
@@ -22,9 +30,13 @@ const creationrole = async (req, res) => {
 const getalldata = async (req, res) => {
   try {
     const alldata = await userModel.find({})
+
+  const data =  alldata.filter((item)=>{
+        return item.role !== "superadmin"
+    })
     res.status(200).send({
       success: true,
-      alldata
+      data
     });
   } catch (error) {
     res

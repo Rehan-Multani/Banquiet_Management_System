@@ -1,5 +1,5 @@
 import express from "express";
-import { creationrole } from "../../controllers/superAdminController/superAdminController.js";
+import { creationrole, getalldata } from "../../controllers/superAdminController/superAdminController.js";
 import requireAuth from "../../middleware/requireAuth.js";
 import userModel from "../../models/userModel.js";
 const router = express.Router();
@@ -19,5 +19,7 @@ const checkSuperAdmin =  async (req, res, next) => {
 
 // routers
 router.post("/creation/:id", requireAuth, checkSuperAdmin, creationrole);
+
+router.get("/getalldata", requireAuth, checkSuperAdmin, getalldata);
 
 export default router;
