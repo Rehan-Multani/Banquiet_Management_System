@@ -78,7 +78,7 @@ const createbooking = async (req, res) => {
       applydate,
       orderfinalstatus,
       adminremark,
-      user : req.user
+      user: req.user.id,
     });
     const booking = await newBooking.save();
 
@@ -100,7 +100,10 @@ const getsingleBooking = async (req, res) => {
 
 const updateBooking = async (req, res) => {
   try {
-    const exists = await bookingModel.findByIdAndUpdate({ _id: req.params.id }, req.body);
+    const exists = await bookingModel.findByIdAndUpdate(
+      { _id: req.params.id },
+      req.body
+    );
     if (exists) {
       res.status(200).json({ success: true, exists });
     }
@@ -108,8 +111,6 @@ const updateBooking = async (req, res) => {
     res.status(502).json({ message: error.message });
   }
 };
-
-
 
 const getBooking = async (req, res) => {
   try {
@@ -128,4 +129,10 @@ const deleteBooking = async (req, res) => {
     res.status(502).json({ success: false, message: error.message });
   }
 };
-export { createbooking, getBooking, updateBooking, deleteBooking, getsingleBooking };
+export {
+  createbooking,
+  getBooking,
+  updateBooking,
+  deleteBooking,
+  getsingleBooking,
+};
