@@ -4,37 +4,6 @@ import validator from "validator";
 
 import bookingModel from "../../models/createbooking/createbookingModel.js";
 
-//create token
-const createToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: 3 * 24 * 60 * 60,
-  });
-};
-
-//login user
-// const loginUser = async (req, res) => {
-//   const { email, password } = req.body;
-//   try {
-//     if (!email || !password) {
-//       return res.status(400).json({ message: "Please enter all fields" });
-//     }
-//     const user = await userModel.findOne({ email });
-
-//     if (!user) {
-//       return res.status(400).json({ message: "User does not exist" });
-//     }
-
-//     const isMatch = await bcrypt.compare(password, user.password);
-//     if (!isMatch) {
-//       return res.status(400).json({ message: "Invalid credentials" });
-//     }
-//     const token = createToken(user._id);
-//     res.status(200).json({ user, token });
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
-
 //register user
 const createbooking = async (req, res) => {
   try {
@@ -130,8 +99,7 @@ const getsingleBooking = async (req, res) => {
 
 const updateBooking = async (req, res) => {
   try {
-    const { id } = req.params._id;
-    const exists = await bookingModel.findByIdAndUpdate({ _id: id }, req.body);
+    const exists = await bookingModel.findByIdAndUpdate({ _id: req.params._id }, req.body);
     if (exists) {
       res.status(200).json({ success: true, exists });
     }
@@ -147,4 +115,13 @@ const getBooking = async (req, res) => {
     res.status(502).json({ success: false, message: error.message });
   }
 };
-export { createbooking, getBooking, updateBooking, getsingleBooking };
+
+const deleteBooking = async (req, res) => {
+  try {
+    const user = await bookingModel.deleteOne({ _id: req.params.id });
+    res.status(200).json({ success: true, user });
+  } catch (error) {
+    res.status(502).json({ success: false, message: error.message });
+  }
+};
+export { createbooking, getBooking, updateBooking, deleteBooking, getsingleBooking };
