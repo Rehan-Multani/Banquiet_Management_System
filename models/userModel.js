@@ -9,9 +9,9 @@ const userSchema = new mongoose.Schema({
   role: {
     type: String,
     default: "user",
-    enum: ["user", "waiter", "staff", "admin", "superadmin"],
+    enum: ["Order Management", "Waiter", "Chef", "admin", "superadmin"],
   },
-  password: { type: String, required: true, select: false },
+  password: { type: String, required: true, select: true },
   resetToken: { type: String, required: false },
 });
 
