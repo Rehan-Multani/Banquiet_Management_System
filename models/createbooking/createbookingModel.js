@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const bookingSchema = new mongoose.Schema({
-  customername: { type: String},
+  customername: { type: String },
   mobilenumber: { type: String },
   email: { type: String },
   bookingfrom: { type: String },
@@ -17,13 +17,14 @@ const bookingSchema = new mongoose.Schema({
   applydate: { type: String },
   orderfinalstatus: { type: String },
   adminremark: { type: String },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
 });
 
 const bookingModel = mongoose.model("booking", bookingSchema);
 export default bookingModel;
-
-
-
 
 // {
 //   "customername":"rahul",

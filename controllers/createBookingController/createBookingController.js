@@ -77,7 +77,8 @@ const createbooking = async (req, res) => {
       serviceprice,
       applydate,
       orderfinalstatus,
-      adminremark
+      adminremark,
+      user : req.user
     });
     const booking = await newBooking.save();
 
