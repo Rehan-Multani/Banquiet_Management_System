@@ -2,7 +2,7 @@ import userModel from "../../models/userModel.js";
 
 const creationrole = async (req, res) => {
   try {
-    const updatecreationID = req.body.userid;
+    const updatecreationID = req.params.id;
     const ifupdated = await userModel.findByIdAndUpdate(updatecreationID, {
       role: req.body.role,
     });
