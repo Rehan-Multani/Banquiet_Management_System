@@ -75,10 +75,9 @@ const createbooking = async (req, res) => {
       serviceprice,
       orderfinalstatus,
       items,
-      user: req.user.id,
+      userbookingid: req.User.id,
     });
     const booking = await newBooking.save();
-
     res.status(200).json({ success: true,  message: 'Booking created successfully', booking });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -88,21 +87,24 @@ const createbooking = async (req, res) => {
 //get user info
 const getsingleBooking = async (req, res) => {
   try {
-    const user = await bookingModel.findOne({ _id: req.params.id }).populate('user');
-    res.status(200).json({ success: true, user });
+    const user = await bookingModel.findOne({ _id: req.params.id }).populate('userbookingid');
+    res.status(200).json({ success: true, message: 'GetSingle Booking', user });
   } catch (error) {
     res.status(502).json({ success: false, message: error.message });
   }
 };
 
+
+// booking updated
 const updateBooking = async (req, res) => {
   try {
     const exists = await bookingModel.findByIdAndUpdate(
-      { _id: req.params.id },
-      req.body
+      { _id: req.params.id},
+      { $set:req.body},
+      { new: true }
     );
     if (exists) {
-      res.status(200).json({ success: true, exists });
+      res.status(200).json({ success: true, message: 'Booking updated successfully', exists });
     }
   } catch (error) {
     res.status(502).json({ message: error.message });
@@ -111,21 +113,24 @@ const updateBooking = async (req, res) => {
 
 const getBooking = async (req, res) => {
   try {
-    const user = await bookingModel.find({}).populate('user');
-    res.status(200).json({ success: true, user });
+    const user = await bookingModel.find({}).populate('userbookingid');
+    console.log("user", user);
+    res.status(200).json({ success: true, message: 'Bookings retrieved successfully', user });
   } catch (error) {
     res.status(502).json({ success: false, message: error.message });
   }
 };
 
+
 const deleteBooking = async (req, res) => {
   try {
     const user = await bookingModel.deleteOne({ _id: req.params.id });
-    res.status(200).json({ success: true, user });
+    res.status(200).json({ success: true, message: 'Booking deleted successfully', user });  
   } catch (error) {
     res.status(502).json({ success: false, message: error.message });
   }
 };
+
 export {
   createbooking,
   getBooking,
