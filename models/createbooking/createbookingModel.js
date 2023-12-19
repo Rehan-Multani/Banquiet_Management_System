@@ -24,7 +24,7 @@ const bookingSchema = new mongoose.Schema({
   orderfinalstatus: { type: String },
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: "user",
   },
 });
 
