@@ -4,10 +4,11 @@ import validator from "validator";
 
 import bookingModel from "../../models/createbooking/createbookingModel.js";
 
+
 //register user
 const createbooking = async (req, res) => {
   try {
-    let {
+    const {
       customername,
       mobilenumber,
       email,
@@ -23,42 +24,39 @@ const createbooking = async (req, res) => {
       serviceprice,
       orderfinalstatus,
       items,
+      list,
     } = req.body;
-    //check if user already exists
+
+    // Check if user already exists
     const exists = await bookingModel.findOne({ email: email });
     if (exists) {
-      return res
-        .status(400)
-        .json({ success: false, message: "you  are already Booked" });
+      return res.status(400).json({ success: false, message: "You are already booked" });
     }
 
-    if (
-      validator.isEmpty(customername) ||
-      validator.isEmpty(mobilenumber) ||
-      validator.isEmpty(bookingfrom) ||
-      validator.isEmpty(timestart) ||
-      validator.isEmpty(bookingto) ||
-      validator.isEmpty(timeend) ||
-      validator.isEmpty(numberofguest) ||
-      validator.isEmpty(eventtypes) ||
-      validator.isEmpty(message) ||
-      validator.isEmpty(servicename) ||
-      validator.isEmpty(servicedescription) ||
-      validator.isEmpty(serviceprice) ||
-      validator.isEmpty(orderfinalstatus) ||
-      !Array.isArray(items) ||
-      items.some(
-        (item) =>
-          validator.isEmpty(item.name) ||
-          validator.isEmpty(item.price) ||
-          validator.isEmpty(item.quantity)
-      ) ||
+    // Validate fields
+    const requiredFields = [
+      customername,
+      mobilenumber,
+      bookingfrom,
+      timestart,
+      bookingto,
+      timeend,
+      numberofguest,
+      eventtypes,
+      message,
+      servicename,
+      servicedescription,
+      serviceprice,
+      orderfinalstatus,
+    ];
 
-      !validator.isEmail(email)
-    ) {
+    const isValidFields = requiredFields.every((field) => !validator.isEmpty(field));
+
+    if (!isValidFields || !Array.isArray(items) || !validator.isEmail(email)||!Array.isArray(list) ) {
       return res.status(400).json({ success: false, message: "Please provide valid details for all fields" });
     }
 
+    // Convert chef and waiter to arrays if they are not already
     const newBooking = new bookingModel({
       customername,
       mobilenumber,
@@ -75,14 +73,17 @@ const createbooking = async (req, res) => {
       serviceprice,
       orderfinalstatus,
       items,
-      userbookingid: req.User.id,
+      list,
+      userbookingid: req.user.id,
     });
+
     const booking = await newBooking.save();
-    res.status(200).json({ success: true,  message: 'Booking created successfully', booking });
+    res.status(200).json({ success: true, message: 'Booking created successfully', booking });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
 
 //get user info
 const getsingleBooking = async (req, res) => {
@@ -113,6 +114,7 @@ const updateBooking = async (req, res) => {
 
 const getBooking = async (req, res) => {
   try {
+    const resultperpage=1
     const user = await bookingModel.find({}).populate('userbookingid');
     console.log("user", user);
     res.status(200).json({ success: true, message: 'Bookings retrieved successfully', user });

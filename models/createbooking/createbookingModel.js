@@ -14,6 +14,7 @@ const bookingSchema = new mongoose.Schema({
   servicename: { type: String },
   servicedescription: { type: String },
   serviceprice: { type: String },
+
   items: [
     {
       name: { type: String },
@@ -21,6 +22,7 @@ const bookingSchema = new mongoose.Schema({
       quantity: { type: String },
     }
   ],
+  list:[],
   orderfinalstatus: { type: String },
   userbookingid: {
     type: mongoose.Schema.Types.ObjectId,
