@@ -14,10 +14,15 @@ const bookingSchema = new mongoose.Schema({
   servicename: { type: String },
   servicedescription: { type: String },
   serviceprice: { type: String },
-  applydate: { type: String },
+  items: [
+    {
+      name: { type: String },
+      price: { type: String },
+      quantity: { type: String },
+    }
+  ],
   orderfinalstatus: { type: String },
-  adminremark: { type: String },
-  user: {
+  userbookingid: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
@@ -26,22 +31,26 @@ const bookingSchema = new mongoose.Schema({
 const bookingModel = mongoose.model("booking", bookingSchema);
 export default bookingModel;
 
-// {
-//   "customername":"rahul",
-//   "mobilenumber":"9898989898",
-//   "email":"rahul@gmail.com",
-//   "bookingfrom":"djak",
-//   "timestart":"22",
-//   "bookingto":"30",
-//   "timeend":"ijl",
-//   "numberofguest":"wae",
-//   "eventtypes":"radsadashul",
-//   "message":"dsads",
-//   "servicename":"dsa",
-//   "servicedescription":"dsad",
-//   "serviceprice":"wseds",
-//   "applydate":"weqes",
-//   "orderfinalstatus":"wqe",
-//   "adminremark":"ewqe"
-
-// }
+// "customername": "raj",
+// "mobilenumber": "5555555555",
+// "email": "raj@gmail.com",
+// "bookingfrom": "wdewkhd",
+// "timestart": "05",
+// "bookingto": "3",
+// "timeend": "2",
+// "numberofguest": "wew",
+// "eventtypes": "www",
+// "message": "www",
+// "servicename": "www",
+// "servicedescription": "rr",
+// "serviceprice": "rrr",
+// "items": [
+//     {
+//         "id": "5",
+//         "name": "t shirt",
+//         "price": "300",
+//         "quantity": "1",
+//         "_id": "65815157f7f3c064591f0998"
+//     }
+// ],
+// "orderfinalstatus": "rrr",

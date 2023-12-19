@@ -21,9 +21,8 @@ const createbooking = async (req, res) => {
       servicename,
       servicedescription,
       serviceprice,
-      applydate,
       orderfinalstatus,
-      adminremark,
+      items,
     } = req.body;
     //check if user already exists
     const exists = await bookingModel.findOne({ email: email });
@@ -32,11 +31,11 @@ const createbooking = async (req, res) => {
         .status(400)
         .json({ success: false, message: "you  are already Booked" });
     }
+
     if (
       validator.isEmpty(customername) ||
       validator.isEmpty(mobilenumber) ||
       validator.isEmpty(bookingfrom) ||
-      // validator.isEmpty(email) ||
       validator.isEmpty(timestart) ||
       validator.isEmpty(bookingto) ||
       validator.isEmpty(timeend) ||
@@ -46,19 +45,18 @@ const createbooking = async (req, res) => {
       validator.isEmpty(servicename) ||
       validator.isEmpty(servicedescription) ||
       validator.isEmpty(serviceprice) ||
-      validator.isEmpty(applydate) ||
       validator.isEmpty(orderfinalstatus) ||
-      validator.isEmpty(adminremark)
+      !Array.isArray(items) ||
+      items.some(
+        (item) =>
+          validator.isEmpty(item.name) ||
+          validator.isEmpty(item.price) ||
+          validator.isEmpty(item.quantity)
+      ) ||
+
+      !validator.isEmail(email)
     ) {
-      return res.status(400).json({
-        success: false,
-        message: "Please provide full details for all fields",
-      });
-    }
-    if (!validator.isEmail(email)) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Please enter a valid email" });
+      return res.status(400).json({ success: false, message: "Please provide valid details for all fields" });
     }
 
     const newBooking = new bookingModel({
@@ -75,14 +73,12 @@ const createbooking = async (req, res) => {
       servicename,
       servicedescription,
       serviceprice,
-      applydate,
       orderfinalstatus,
-      adminremark,
-      user: req.user.id,
+      items,
+      userbookingid: req.User.id,
     });
     const booking = await newBooking.save();
-
-    res.status(200).json({ success: true, booking });
+    res.status(200).json({ success: true,  message: 'Booking created successfully', booking });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -91,21 +87,24 @@ const createbooking = async (req, res) => {
 //get user info
 const getsingleBooking = async (req, res) => {
   try {
-    const user = await bookingModel.findOne({ _id: req.params.id }).populate('user');
-    res.status(200).json({ success: true, user });
+    const user = await bookingModel.findOne({ _id: req.params.id }).populate('userbookingid');
+    res.status(200).json({ success: true, message: 'GetSingle Booking', user });
   } catch (error) {
     res.status(502).json({ success: false, message: error.message });
   }
 };
 
+
+// booking updated
 const updateBooking = async (req, res) => {
   try {
     const exists = await bookingModel.findByIdAndUpdate(
-      { _id: req.params.id },
-      req.body
+      { _id: req.params.id},
+      { $set:req.body},
+      { new: true }
     );
     if (exists) {
-      res.status(200).json({ success: true, exists });
+      res.status(200).json({ success: true, message: 'Booking updated successfully', exists });
     }
   } catch (error) {
     res.status(502).json({ message: error.message });
@@ -114,21 +113,24 @@ const updateBooking = async (req, res) => {
 
 const getBooking = async (req, res) => {
   try {
-    const user = await bookingModel.find({}).populate('user');
-    res.status(200).json({ success: true, user });
+    const user = await bookingModel.find({}).populate('userbookingid');
+    console.log("user", user);
+    res.status(200).json({ success: true, message: 'Bookings retrieved successfully', user });
   } catch (error) {
     res.status(502).json({ success: false, message: error.message });
   }
 };
 
+
 const deleteBooking = async (req, res) => {
   try {
     const user = await bookingModel.deleteOne({ _id: req.params.id });
-    res.status(200).json({ success: true, user });
+    res.status(200).json({ success: true, message: 'Booking deleted successfully', user });  
   } catch (error) {
     res.status(502).json({ success: false, message: error.message });
   }
 };
+
 export {
   createbooking,
   getBooking,
