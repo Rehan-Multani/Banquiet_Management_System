@@ -21,9 +21,8 @@ const createbooking = async (req, res) => {
       servicename,
       servicedescription,
       serviceprice,
-      applydate,
       orderfinalstatus,
-      adminremark,
+      items,
     } = req.body;
     //check if user already exists
     const exists = await bookingModel.findOne({ email: email });
@@ -32,11 +31,11 @@ const createbooking = async (req, res) => {
         .status(400)
         .json({ success: false, message: "you  are already Booked" });
     }
+
     if (
       validator.isEmpty(customername) ||
       validator.isEmpty(mobilenumber) ||
       validator.isEmpty(bookingfrom) ||
-      // validator.isEmpty(email) ||
       validator.isEmpty(timestart) ||
       validator.isEmpty(bookingto) ||
       validator.isEmpty(timeend) ||
@@ -46,19 +45,18 @@ const createbooking = async (req, res) => {
       validator.isEmpty(servicename) ||
       validator.isEmpty(servicedescription) ||
       validator.isEmpty(serviceprice) ||
-      validator.isEmpty(applydate) ||
       validator.isEmpty(orderfinalstatus) ||
-      validator.isEmpty(adminremark)
+      !Array.isArray(items) ||
+      items.some(
+        (item) =>
+          validator.isEmpty(item.name) ||
+          validator.isEmpty(item.price) ||
+          validator.isEmpty(item.quantity)
+      ) ||
+
+      !validator.isEmail(email)
     ) {
-      return res.status(400).json({
-        success: false,
-        message: "Please provide full details for all fields",
-      });
-    }
-    if (!validator.isEmail(email)) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Please enter a valid email" });
+      return res.status(400).json({ success: false, message: "Please provide valid details for all fields" });
     }
 
     const newBooking = new bookingModel({
@@ -75,14 +73,13 @@ const createbooking = async (req, res) => {
       servicename,
       servicedescription,
       serviceprice,
-      applydate,
       orderfinalstatus,
-      adminremark,
+      items,
       user: req.user.id,
     });
     const booking = await newBooking.save();
 
-    res.status(200).json({ success: true, booking });
+    res.status(200).json({ success: true,  message: 'Booking created successfully', booking });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
