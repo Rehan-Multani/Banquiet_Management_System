@@ -1,6 +1,37 @@
 import validator from "validator";
 
 import bookingModel from "../../models/createbooking/createbookingModel.js";
+import { createTransport } from "nodemailer";
+import userModel from "../../models/userModel.js";
+
+const sendMail = (email, orderManagerEmail, status, data) => {
+  const transporter = createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.GMAIL_USERNAME,
+      pass: process.env.GMAIL_PASSWORD,
+    },
+  });
+
+  const mailOptions = {
+    from: "ranjanlamichhanekiaan@gmail.com",
+    to: [email, orderManagerEmail],
+    subject: `Your order got ${status}`,
+    html: `<div>Name: ${data.customername}</div><div>Booking from: ${data.bookingfrom}</div><div>Booking to: ${data.bookingto}</div>
+    <div>Service:${data.servicename}</div>
+    <div>Status:${data.orderfinalstatus}</div>
+    `,
+  };
+
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      return false;
+    } else {
+      console.log("Email sent: " + info.response);
+      return true;
+    }
+  });
+};
 
 //register user
 const createbooking = async (req, res) => {
@@ -91,8 +122,11 @@ const createbooking = async (req, res) => {
       waiter: finalWaiter,
       userbookingid: req.user.id,
     });
-
+    const { email: orderManagerEmail } = await userModel
+      .findById(req.user.id)
+      .select("email");
     const booking = await newBooking.save();
+    sendMail(email, orderManagerEmail, "created", booking);
     res.status(200).json({
       success: true,
       message: "Booking created successfully",
@@ -197,7 +231,10 @@ const updateBooking = async (req, res) => {
       },
       { new: true }
     );
-
+    const { email: orderManagerEmail } = await userModel
+      .findById(req.user.id)
+      .select("email");
+    sendMail(email, orderManagerEmail, "updated", updatedBooking);
     res.status(200).json({
       success: true,
       message: "Booking updated successfully",
@@ -210,6 +247,7 @@ const updateBooking = async (req, res) => {
 
 const getBooking = async (req, res) => {
   try {
+    // sendMail();
     const bookings = await bookingModel.find({});
     console.log("bookings", bookings);
     res.status(200).json({
@@ -224,10 +262,38 @@ const getBooking = async (req, res) => {
 
 const deleteBooking = async (req, res) => {
   try {
-    const user = await bookingModel.deleteOne({ _id: req.params.id });
-    res
-      .status(200)
-      .json({ success: true, message: "Booking deleted successfully", user });
+    const data = await bookingModel.findOneAndDelete({ _id: req.params.id });
+    const transporter = createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.GMAIL_USERNAME,
+        pass: process.env.GMAIL_PASSWORD,
+      },
+    });
+    const { email: orderManagerEmail } = await userModel.findById(
+      data.userbookingid
+    );
+    const mailOptions = {
+      from: "ranjanlamichhanekiaan@gmail.com",
+      to: [data.email, orderManagerEmail],
+      subject: `Your order got deleted`,
+      html: `<div>Name: ${data.customername}</div><div>Booking from: ${data.bookingfrom}</div><div>Booking to: ${data.bookingto}</div>
+      <div>Service:${data.servicename}</div>
+      <div>Status:${data.orderfinalstatus}</div>
+      `,
+    };
+
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        res.status(502).json({ success: false, message: error.message });
+      } else {
+        console.log("Email sent: " + info.response);
+      }
+    });
+    res.status(200).json({
+      success: true,
+      message: "Booking deleted successfully",
+    });
   } catch (error) {
     res.status(502).json({ success: false, message: error.message });
   }
