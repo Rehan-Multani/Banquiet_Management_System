@@ -262,34 +262,8 @@ const getBooking = async (req, res) => {
 
 const deleteBooking = async (req, res) => {
   try {
-    const data = await bookingModel.findOneAndDelete({ _id: req.params.id });
-    const transporter = createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.GMAIL_USERNAME,
-        pass: process.env.GMAIL_PASSWORD,
-      },
-    });
-    const { email: orderManagerEmail } = await userModel.findById(
-      data.userbookingid
-    );
-    const mailOptions = {
-      from: "ranjanlamichhanekiaan@gmail.com",
-      to: [data.email, orderManagerEmail],
-      subject: `Your order got deleted`,
-      html: `<div>Name: ${data.customername}</div><div>Booking from: ${data.bookingfrom}</div><div>Booking to: ${data.bookingto}</div>
-      <div>Service:${data.servicename}</div>
-      <div>Status:${data.orderfinalstatus}</div>
-      `,
-    };
+    await bookingModel.findOneAndDelete({ _id: req.params.id });
 
-    transporter.sendMail(mailOptions, function (error, info) {
-      if (error) {
-        res.status(502).json({ success: false, message: error.message });
-      } else {
-        console.log("Email sent: " + info.response);
-      }
-    });
     res.status(200).json({
       success: true,
       message: "Booking deleted successfully",
