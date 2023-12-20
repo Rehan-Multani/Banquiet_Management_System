@@ -12,7 +12,7 @@ const checkSuperAdmin =  async (req, res, next) => {
     next();
   } else {
     res.status(403).json({
-      error: "Permission denied. Only super admins can perform this action.",
+      error: "Permission denied. Only superadmins admins can perform this action.",
     });
   }
 };
