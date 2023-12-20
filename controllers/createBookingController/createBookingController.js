@@ -26,7 +26,7 @@ const createbooking = async (req, res) => {
       chef,
       waiter,
     } = req.body;
-
+    
     // Check if user already exists
     const exists = await bookingModel.findOne({ email: email });
     if (exists) {
@@ -60,7 +60,8 @@ const createbooking = async (req, res) => {
       !isValidFields ||
       !Array.isArray(items) ||
       !validator.isEmail(email) ||
-      !Array.isArray(list)
+      !Array.isArray(chef)||
+      !Array.isArray(waiter)
     ) {
       return res.status(400).json({
         success: false,
