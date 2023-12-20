@@ -26,7 +26,7 @@ const createbooking = async (req, res) => {
       chef,
       waiter,
     } = req.body;
-    
+
     // Check if user already exists
     const exists = await bookingModel.findOne({ email: email });
     if (exists) {
