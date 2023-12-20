@@ -26,7 +26,7 @@ const createbooking = async (req, res) => {
       chef,
       waiter,
     } = req.body;
-    
+    console.log(chef, servicedescription, servicename, waiter, items);
     // Check if user already exists
     const exists = await bookingModel.findOne({ email: email });
     if (exists) {
@@ -51,6 +51,9 @@ const createbooking = async (req, res) => {
       serviceprice,
       orderfinalstatus,
     ];
+    const finalItems = JSON.parse(items);
+    const finalChef = JSON.parse(chef);
+    const finalWaiter = JSON.parse(waiter);
 
     const isValidFields = requiredFields.every(
       (field) => !validator.isEmpty(field)
@@ -58,10 +61,10 @@ const createbooking = async (req, res) => {
 
     if (
       !isValidFields ||
-      !Array.isArray(items) ||
+      !Array.isArray(finalItems) ||
       !validator.isEmail(email) ||
-      !Array.isArray(chef)||
-      !Array.isArray(waiter)
+      !Array.isArray(finalChef) ||
+      !Array.isArray(finalWaiter)
     ) {
       return res.status(400).json({
         success: false,
@@ -85,9 +88,9 @@ const createbooking = async (req, res) => {
       servicedescription,
       serviceprice,
       orderfinalstatus,
-      items,
-      chef,
-      waiter,
+      items: finalItems,
+      chef: finalChef,
+      waiter: finalWaiter,
       userbookingid: req.user.id,
     });
 
@@ -136,13 +139,12 @@ const updateBooking = async (req, res) => {
 
 const getBooking = async (req, res) => {
   try {
-    const resultperpage = 1;
-    const user = await bookingModel.find({}).populate("userbookingid");
-    console.log("user", user);
+    const bookings = await bookingModel.find({});
+    console.log("bookings", bookings);
     res.status(200).json({
       success: true,
       message: "Bookings retrieved successfully",
-      user,
+      bookings,
     });
   } catch (error) {
     res.status(502).json({ success: false, message: error.message });
