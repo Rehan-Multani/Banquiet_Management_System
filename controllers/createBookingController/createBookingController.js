@@ -24,7 +24,8 @@ const createbooking = async (req, res) => {
       serviceprice,
       orderfinalstatus,
       items,
-      list,
+      chef,
+      waiter,
     } = req.body;
 
     // Check if user already exists
@@ -52,7 +53,7 @@ const createbooking = async (req, res) => {
 
     const isValidFields = requiredFields.every((field) => !validator.isEmpty(field));
 
-    if (!isValidFields || !Array.isArray(items) || !validator.isEmail(email)||!Array.isArray(list) ) {
+    if (!isValidFields || !Array.isArray(items) || !validator.isEmail(email)||!Array.isArray(chef) ||!Array.isArray(waiter) ) {
       return res.status(400).json({ success: false, message: "Please provide valid details for all fields" });
     }
 
@@ -73,7 +74,8 @@ const createbooking = async (req, res) => {
       serviceprice,
       orderfinalstatus,
       items,
-      list,
+      chef,
+      waiter,
       userbookingid: req.user.id,
     });
 

@@ -22,7 +22,8 @@ const bookingSchema = new mongoose.Schema({
       quantity: { type: String },
     }
   ],
-  list:[],
+  chef:[],
+  waiter:[],
   orderfinalstatus: { type: String },
   userbookingid: {
     type: mongoose.Schema.Types.ObjectId,
@@ -33,26 +34,26 @@ const bookingSchema = new mongoose.Schema({
 const bookingModel = mongoose.model("booking", bookingSchema);
 export default bookingModel;
 
-// "customername": "raj",
-// "mobilenumber": "5555555555",
-// "email": "raj@gmail.com",
-// "bookingfrom": "wdewkhd",
-// "timestart": "05",
-// "bookingto": "3",
-// "timeend": "2",
-// "numberofguest": "wew",
-// "eventtypes": "www",
-// "message": "www",
-// "servicename": "www",
-// "servicedescription": "rr",
-// "serviceprice": "rrr",
-// "items": [
-//     {
-//         "id": "5",
-//         "name": "t shirt",
-//         "price": "300",
-//         "quantity": "1",
-//         "_id": "65815157f7f3c064591f0998"
-//     }
-// ],
-// "orderfinalstatus": "rrr",
+
+// {
+//   "customername":"lokesh",
+//   "mobilenumber":"9865623569",
+//   "email":"lokesh@gmai1.com",
+//   "bookingfrom":"jhfskdh",
+//   "timestart":"06",
+//   "bookingto":"02",
+//   "timeend":"12",
+//   "numberofguest":"ewr",
+//   "eventtypes":"ewrew",
+//   "message":"ewrew",
+//   "servicename":"ewr",
+//   "servicedescription":"erw",
+//   "serviceprice":"rer",
+//   "orderfinalstatus":"ewf",
+//   "items":[{ 
+//     "name":"pronew",
+//     "price":"400",
+//     "quantity":"4"
+//   }],
+//   "list":[{"hubuh":"uhfghf","yhfgf":"jhghv"}]
+// }
