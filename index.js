@@ -10,6 +10,7 @@ import admin from "./routes/adminRouter/adminRouter.js";
 import taskRouter from "./routes/taskRoute.js";
 import forgotPasswordRouter from "./routes/forgotPassword.js";
 import bookingRouter from "./routes/createBookingRouter/createBookingRouter.js";
+import customerRouter from "./routes/customerRouter/customerRouter.js";
 
 //app config
 dotenv.config();
@@ -41,6 +42,7 @@ app.use("/api/user", userRouter);
 app.use("/api/task", taskRouter);
 app.use("/api/forgotPassword", forgotPasswordRouter);
 app.use("/api/booking", bookingRouter);
+app.use("/api/customer", customerRouter);
 
 // super admin routes
 app.use("/api/superadmin", superAdmin);
