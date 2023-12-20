@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
   contact: { type: String },
   role: {
     type: String,
-    default: "user",
+    default: "Order Management",
     enum: ["Order Management", "Waiter", "Chef", "admin", "superadmin"],
   },
   password: { type: String, required: true, select: true },
