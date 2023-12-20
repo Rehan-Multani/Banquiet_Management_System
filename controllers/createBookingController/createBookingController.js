@@ -1,5 +1,3 @@
-import jwt from "jsonwebtoken";
-
 import validator from "validator";
 
 import bookingModel from "../../models/createbooking/createbookingModel.js";
@@ -119,19 +117,92 @@ const getsingleBooking = async (req, res) => {
 
 // booking updated
 const updateBooking = async (req, res) => {
+  const { id } = req.params;
+  const {
+    customername,
+    mobilenumber,
+    email,
+    bookingfrom,
+    timestart,
+    bookingto,
+    timeend,
+    numberofguest,
+    eventtypes,
+    message,
+    servicename,
+    servicedescription,
+    serviceprice,
+    orderfinalstatus,
+    items,
+    chef,
+    waiter,
+  } = req.body;
+  // Validate fields
+  const requiredFields = [
+    customername,
+    mobilenumber,
+    bookingfrom,
+    timestart,
+    bookingto,
+    timeend,
+    numberofguest,
+    eventtypes,
+    message,
+    servicename,
+    servicedescription,
+    serviceprice,
+    orderfinalstatus,
+  ];
+  const finalItems = JSON.parse(items);
+  const finalChef = JSON.parse(chef);
+  const finalWaiter = JSON.parse(waiter);
+
+  const isValidFields = requiredFields.every(
+    (field) => !validator.isEmpty(field)
+  );
+
+  if (
+    !isValidFields ||
+    !Array.isArray(finalItems) ||
+    !validator.isEmail(email) ||
+    !Array.isArray(finalChef) ||
+    !Array.isArray(finalWaiter)
+  ) {
+    return res.status(400).json({
+      success: false,
+      message: "Please provide valid details for all fields",
+    });
+  }
   try {
-    const exists = await bookingModel.findByIdAndUpdate(
-      { _id: req.params.id },
-      { $set: req.body },
+    const updatedBooking = await bookingModel.findByIdAndUpdate(
+      id,
+      {
+        customername,
+        mobilenumber,
+        email,
+        bookingfrom,
+        timestart,
+        bookingto,
+        timeend,
+        numberofguest,
+        eventtypes,
+        message,
+        servicename,
+        servicedescription,
+        serviceprice,
+        orderfinalstatus,
+        items: finalItems,
+        chef: finalChef,
+        waiter: finalWaiter,
+      },
       { new: true }
     );
-    if (exists) {
-      res.status(200).json({
-        success: true,
-        message: "Booking updated successfully",
-        exists,
-      });
-    }
+
+    res.status(200).json({
+      success: true,
+      message: "Booking updated successfully",
+      booking: updatedBooking,
+    });
   } catch (error) {
     res.status(502).json({ message: error.message });
   }
