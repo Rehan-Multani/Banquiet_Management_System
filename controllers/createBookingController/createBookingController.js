@@ -7,7 +7,7 @@ import bookingModel from "../../models/createbooking/createbookingModel.js";
 //register user
 const createbooking = async (req, res) => {
   try {
-    let {
+    const {
       customername,
       mobilenumber,
       email,
@@ -23,42 +23,51 @@ const createbooking = async (req, res) => {
       serviceprice,
       orderfinalstatus,
       items,
+      list,
     } = req.body;
-    //check if user already exists
-    const exists = await bookingModel.findOne({ email });
+
+    // Check if user already exists
+    const exists = await bookingModel.findOne({ email: email });
     if (exists) {
       return res
         .status(400)
-        .json({ success: false, message: "you  are already Booked" });
+        .json({ success: false, message: "You are already booked" });
     }
+
+    // Validate fields
+    const requiredFields = [
+      customername,
+      mobilenumber,
+      bookingfrom,
+      timestart,
+      bookingto,
+      timeend,
+      numberofguest,
+      eventtypes,
+      message,
+      servicename,
+      servicedescription,
+      serviceprice,
+      orderfinalstatus,
+    ];
+
+    const isValidFields = requiredFields.every(
+      (field) => !validator.isEmpty(field)
+    );
 
     if (
-      validator.isEmpty(customername) ||
-      validator.isEmpty(mobilenumber) ||
-      validator.isEmpty(bookingfrom) ||
-      validator.isEmpty(timestart) ||
-      validator.isEmpty(bookingto) ||
-      validator.isEmpty(timeend) ||
-      validator.isEmpty(numberofguest) ||
-      validator.isEmpty(eventtypes) ||
-      validator.isEmpty(message) ||
-      validator.isEmpty(servicename) ||
-      validator.isEmpty(servicedescription) ||
-      validator.isEmpty(serviceprice) ||
-      validator.isEmpty(orderfinalstatus) ||
+      !isValidFields ||
       !Array.isArray(items) ||
-      items.some(
-        (item) =>
-          validator.isEmpty(item.name) ||
-          validator.isEmpty(item.price) ||
-          validator.isEmpty(item.quantity)
-      ) ||
-
-      !validator.isEmail(email)
+      !validator.isEmail(email) ||
+      !Array.isArray(list)
     ) {
-      return res.status(400).json({ success: false, message: "Please provide valid details for all fields" });
+      return res.status(400).json({
+        success: false,
+        message: "Please provide valid details for all fields",
+      });
     }
 
+    // Convert chef and waiter to arrays if they are not already
     const newBooking = new bookingModel({
       customername,
       mobilenumber,
@@ -75,10 +84,16 @@ const createbooking = async (req, res) => {
       serviceprice,
       orderfinalstatus,
       items,
-      userbookingid: req.User.id,
+      list,
+      userbookingid: req.user.id,
     });
+
     const booking = await newBooking.save();
-    res.status(200).json({ success: true,  message: 'Booking created successfully', booking });
+    res.status(200).json({
+      success: true,
+      message: "Booking created successfully",
+      booking,
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -87,24 +102,29 @@ const createbooking = async (req, res) => {
 //get user info
 const getsingleBooking = async (req, res) => {
   try {
-    const user = await bookingModel.findOne({ _id: req.params.id }).populate('userbookingid');
-    res.status(200).json({ success: true, message: 'GetSingle Booking', user });
+    const user = await bookingModel
+      .findOne({ _id: req.params.id })
+      .populate("userbookingid");
+    res.status(200).json({ success: true, message: "GetSingle Booking", user });
   } catch (error) {
     res.status(502).json({ success: false, message: error.message });
   }
 };
 
-
 // booking updated
 const updateBooking = async (req, res) => {
   try {
     const exists = await bookingModel.findByIdAndUpdate(
-      { _id: req.params.id},
-      { $set:req.body},
+      { _id: req.params.id },
+      { $set: req.body },
       { new: true }
     );
     if (exists) {
-      res.status(200).json({ success: true, message: 'Booking updated successfully', exists });
+      res.status(200).json({
+        success: true,
+        message: "Booking updated successfully",
+        exists,
+      });
     }
   } catch (error) {
     res.status(502).json({ message: error.message });
@@ -113,19 +133,25 @@ const updateBooking = async (req, res) => {
 
 const getBooking = async (req, res) => {
   try {
-    const user = await bookingModel.find({}).populate('userbookingid');
+    const resultperpage = 1;
+    const user = await bookingModel.find({}).populate("userbookingid");
     console.log("user", user);
-    res.status(200).json({ success: true, message: 'Bookings retrieved successfully', user });
+    res.status(200).json({
+      success: true,
+      message: "Bookings retrieved successfully",
+      user,
+    });
   } catch (error) {
     res.status(502).json({ success: false, message: error.message });
   }
 };
 
-
 const deleteBooking = async (req, res) => {
   try {
     const user = await bookingModel.deleteOne({ _id: req.params.id });
-    res.status(200).json({ success: true, message: 'Booking deleted successfully', user });  
+    res
+      .status(200)
+      .json({ success: true, message: "Booking deleted successfully", user });
   } catch (error) {
     res.status(502).json({ success: false, message: error.message });
   }
