@@ -25,7 +25,7 @@ const createbooking = async (req, res) => {
       items,
     } = req.body;
     //check if user already exists
-    const exists = await bookingModel.findOne({ email: email });
+    const exists = await bookingModel.findOne({ email });
     if (exists) {
       return res
         .status(400)
