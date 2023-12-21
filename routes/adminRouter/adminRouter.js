@@ -1,10 +1,5 @@
 import express from "express";
-import {
-  creationrole,
-  getalldata,
-  createadmin,
-  adminlogin,
-} from "../../controllers/adminController/adminController.js";
+import { creationrole, getalldata, createadmin, adminlogin, getdata_NC, getdata_C } from "../../controllers/adminController/adminController.js";
 import requireAuth from "../../middleware/requireAuth.js";
 import userModel from "../../models/userModel.js";
 const router = express.Router();
@@ -22,12 +17,16 @@ const checkAdmin = async (req, res, next) => {
 };
 
 // routers
-router.post("/create", createadmin);
+router.post("/createadmin", createadmin);
 
-router.post("/login", adminlogin);
+router.post("/adminlogin", adminlogin);
 
 router.post("/creation/:id", requireAuth, checkAdmin, creationrole);
 
 router.get("/getalldata", requireAuth, checkAdmin, getalldata);
+
+router.get("/order_notconfirmed", requireAuth, getdata_NC);
+
+router.get("/order_confirmed", requireAuth, getdata_C);
 
 export default router;
