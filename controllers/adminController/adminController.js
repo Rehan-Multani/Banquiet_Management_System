@@ -46,8 +46,7 @@ const createadmin = async (req, res) => {
 
     const admin = await newAdmin.save();
 
-    const token = createToken(admin._id);
-    res.status(201).json({ success: true, message: 'Admin created successfully', admin, token });
+    res.status(201).json({ success: true, message: 'Admin created successfully', admin });
   } catch (error) {
     console.error('Error creating admin:', error);
     res.status(500).json({ success: false, message: 'Internal server error', error: error.message });
@@ -135,7 +134,7 @@ const getdata_NC = async (req, res) => {
     res.status(200).send({
       success: true,
       message: "Not Confirmed",
-      data 
+      data
     });
   } catch (error) {
     res
@@ -153,7 +152,7 @@ const getdata_C = async (req, res) => {
     res.status(200).send({
       success: true,
       message: "Confirmed",
-      data 
+      data
     });
   } catch (error) {
     res
