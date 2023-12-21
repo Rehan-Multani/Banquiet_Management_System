@@ -252,15 +252,42 @@ const getBooking = async (req, res) => {
     const isAdmin = await adminModel.findById(req.user.id);
     let bookings;
     if (isAdmin) {
-      bookings = await bookingModel.find({});
+      bookings = await bookingModel.find();
     } else {
       bookings = await bookingModel.find({ userbookingid: req.user.id });
     }
-    console.log("bookings", bookings);
     res.status(200).json({
       success: true,
       message: "Bookings retrieved successfully",
       bookings,
+    });
+  } catch (error) {
+    res.status(502).json({ success: false, message: error.message });
+  }
+};
+const getBookingByPage = async (req, res) => {
+  const page = +req.params.page || 1;
+  const ITEMS_PER_PAGE = 2;
+  const skip = (page - 1) * ITEMS_PER_PAGE;
+  try {
+    // sendMail();
+    const isAdmin = await adminModel.findById(req.user.id);
+    let bookings;
+    if (isAdmin) {
+      bookings = await bookingModel.find().skip(skip).limit(ITEMS_PER_PAGE);
+    } else {
+      bookings = await bookingModel
+        .find({ userbookingid: req.user.id })
+        .skip(skip)
+        .limit(ITEMS_PER_PAGE);
+    }
+    console.log("bookings", bookings);
+    const totalDocuments = await bookingModel.countDocuments();
+    res.status(200).json({
+      success: true,
+      message: "Bookings retrieved successfully",
+      bookings,
+      totalPage: Math.ceil(totalDocuments / ITEMS_PER_PAGE),
     });
   } catch (error) {
     res.status(502).json({ success: false, message: error.message });
@@ -286,4 +313,5 @@ export {
   updateBooking,
   deleteBooking,
   getsingleBooking,
+  getBookingByPage,
 };

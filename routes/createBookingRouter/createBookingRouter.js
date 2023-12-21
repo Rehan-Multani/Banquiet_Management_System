@@ -5,7 +5,8 @@ import {
   getBooking,
   updateBooking,
   getsingleBooking,
-  deleteBooking
+  deleteBooking,
+  getBookingByPage,
 } from "../../controllers/createBookingController/createBookingController.js";
 import requireAuth from "../../middleware/requireAuth.js";
 const router = express.Router();
@@ -13,6 +14,7 @@ const router = express.Router();
 router.post("/", requireAuth, createbooking);
 router.get("/:id", requireAuth, getsingleBooking);
 router.get("/", requireAuth, getBooking);
+router.get("/:page", requireAuth, getBookingByPage);
 router.delete("/:id", requireAuth, deleteBooking);
 router.put("/:id", requireAuth, updateBooking);
 
