@@ -6,7 +6,7 @@ import validator from "validator";
 //create token
 const createToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: '1d',
+    expiresIn: "1d",
   });
 };
 
@@ -79,7 +79,7 @@ const registerUser = async (req, res) => {
       password: hashedPassword,
     });
     const user = await newUser.save();
-    console.log(user.id)
+    console.log(user.id);
     const token = createToken(user._id);
     res.status(200).json({ user, token });
   } catch (error) {
@@ -97,4 +97,20 @@ const getUser = async (req, res) => {
     res.status(502).json({ message: error.message });
   }
 };
-export { loginUser, registerUser, getUser };
+const getsaffwaiter = async (req, res) => {
+  const id = req.user.id;
+  try {
+    const user = await userModel.find({}).select("-password");
+
+    const Waiter = user.filter((item) => {
+      return item.role == "Waiter";
+    });
+    const Chef = user.filter((item) => {
+      return item.role == "Chef";
+    });
+    res.status(200).json({ Waiter, Chef });
+  } catch (error) {
+    res.status(502).json({ message: error.message });
+  }
+};
+export { loginUser, registerUser, getUser, getsaffwaiter };
