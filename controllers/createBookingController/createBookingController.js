@@ -3,6 +3,7 @@ import validator from "validator";
 import bookingModel from "../../models/createbooking/createbookingModel.js";
 import { createTransport } from "nodemailer";
 import userModel from "../../models/userModel.js";
+import adminModel from "../../models/adminModel/adminModel.js";
 
 const sendMail = (email, orderManagerEmail, status, data) => {
   const transporter = createTransport({
@@ -248,7 +249,13 @@ const updateBooking = async (req, res) => {
 const getBooking = async (req, res) => {
   try {
     // sendMail();
-    const bookings = await bookingModel.find({});
+    const isAdmin = await adminModel.findById(req.user.id);
+    let bookings;
+    if (isAdmin) {
+      bookings = await bookingModel.find({});
+    } else {
+      bookings = await bookingModel.find({ userbookingid: req.user.id });
+    }
     console.log("bookings", bookings);
     res.status(200).json({
       success: true,

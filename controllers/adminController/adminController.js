@@ -6,24 +6,23 @@ import validator from "validator";
 
 const createToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: '1d',
+    expiresIn: "1d",
   });
 };
 
 const createadmin = async (req, res) => {
   try {
-    const { email, password, notifications } = req.body;
+    const { email, password } = req.body;
 
     const exists = await adminmodel.findOne({ email });
     if (exists) {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    if (
-      validator.isEmpty(email) ||
-      validator.isEmpty(password)
-    ) {
-      return res.status(400).json({ message: "Please provide valid email and password" });
+    if (validator.isEmpty(email) || validator.isEmpty(password)) {
+      return res
+        .status(400)
+        .json({ message: "Please provide valid email and password" });
     }
     if (!validator.isEmail(email)) {
       return res.status(400).json({ message: "Please enter a valid email" });
@@ -40,16 +39,23 @@ const createadmin = async (req, res) => {
     const newAdmin = new adminmodel({
       email,
       password: hashedPassword,
-      notifications: notifications || [],
+      notifications: [],
     });
 
     const admin = await newAdmin.save();
 
-    const token = createToken(admin._id);
-    res.status(201).json({ success: true, message: 'Admin created successfully', admin, token });
+    res.status(201).json({
+      success: true,
+      message: "Admin created successfully",
+      admin,
+    });
   } catch (error) {
-    console.error('Error creating admin:', error);
-    res.status(500).json({ success: false, message: 'Internal server error', error: error.message });
+    console.error("Error creating admin:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
   }
 };
 
@@ -75,10 +81,6 @@ const adminlogin = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
-
-
-
 
 const creationrole = async (req, res) => {
   try {
@@ -106,23 +108,22 @@ const creationrole = async (req, res) => {
   }
 };
 
-
 const getalldata = async (req, res) => {
   try {
-    const alldata = await userModel.find({})
+    const alldata = await userModel.find({});
 
     const data = alldata.filter((item) => {
-      return item.role !== "superadmin"
-    })
+      return item.role !== "superadmin";
+    });
     res.status(200).send({
       success: true,
-      data
+      data,
     });
   } catch (error) {
     res
       .status(500)
       .send({ success: false, message: "internal server Error" + error });
   }
-}
+};
 
 export { creationrole, getalldata, createadmin, adminlogin };

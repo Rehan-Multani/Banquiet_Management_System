@@ -20,10 +20,10 @@ const bookingSchema = new mongoose.Schema({
       name: { type: String },
       price: { type: String },
       quantity: { type: String },
-    }
+    },
   ],
-  chef:[],
-  waiter:[],
+  chef: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+  waiter: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   orderfinalstatus: { type: String },
   userbookingid: {
     type: mongoose.Schema.Types.ObjectId,
@@ -33,7 +33,6 @@ const bookingSchema = new mongoose.Schema({
 
 const bookingModel = mongoose.model("booking", bookingSchema);
 export default bookingModel;
-
 
 // {
 //   "customername":"lokesh",
@@ -50,7 +49,7 @@ export default bookingModel;
 //   "servicedescription":"erw",
 //   "serviceprice":"rer",
 //   "orderfinalstatus":"ewf",
-//   "items":[{ 
+//   "items":[{
 //     "name":"pronew",
 //     "price":"400",
 //     "quantity":"4"

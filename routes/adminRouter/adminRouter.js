@@ -1,5 +1,10 @@
 import express from "express";
-import { creationrole, getalldata, createadmin, adminlogin } from "../../controllers/adminController/adminController.js";
+import {
+  creationrole,
+  getalldata,
+  createadmin,
+  adminlogin,
+} from "../../controllers/adminController/adminController.js";
 import requireAuth from "../../middleware/requireAuth.js";
 import userModel from "../../models/userModel.js";
 const router = express.Router();
@@ -17,9 +22,9 @@ const checkAdmin = async (req, res, next) => {
 };
 
 // routers
-router.post("/createadmin", createadmin);
+router.post("/create", createadmin);
 
-router.post("/adminlogin", adminlogin);
+router.post("/login", adminlogin);
 
 router.post("/creation/:id", requireAuth, checkAdmin, creationrole);
 
