@@ -56,13 +56,11 @@ const createadmin = async (req, res) => {
       });
   } catch (error) {
     console.error("Error creating admin:", error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Internal server error",
-        error: error.message,
-      });
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
   }
 };
 
