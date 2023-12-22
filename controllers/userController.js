@@ -131,7 +131,7 @@ const verifyuser = async (req, res) => {
     res.status(502).json({ message: error.message });
   }
 };
-const deletenotification = async (req, res) => {
+const deleteNotification = async (req, res) => {
   try {
     const userId = req.params.id;
     console.log("userId", userId);
@@ -159,5 +159,5 @@ export {
   getUser,
   getsaffwaiter,
   verifyuser,
-  deletenotification,
+  deleteNotification,
 };
