@@ -75,10 +75,7 @@ const createbooking = async (req, res) => {
       timeend,
       numberofguest,
       eventtypes,
-      message,
       servicename,
-      servicedescription,
-      serviceprice,
       orderfinalstatus,
     ];
     const finalItems = JSON.parse(items);

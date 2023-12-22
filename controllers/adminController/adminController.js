@@ -1,13 +1,13 @@
 import userModel from "../../models/userModel.js";
 import adminmodel from "../../models/adminModel/adminModel.js";
-import bookingmodel from "../../models/createbooking/createbookingModel.js"
+import bookingmodel from "../../models/createbooking/createbookingModel.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import validator from "validator";
 
 const createToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: '1d',
+    expiresIn: "1yr",
   });
 };
 
@@ -20,11 +20,10 @@ const createadmin = async (req, res) => {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    if (
-      validator.isEmpty(email) ||
-      validator.isEmpty(password)
-    ) {
-      return res.status(400).json({ message: "Please provide valid email and password" });
+    if (validator.isEmpty(email) || validator.isEmpty(password)) {
+      return res
+        .status(400)
+        .json({ message: "Please provide valid email and password" });
     }
     if (!validator.isEmail(email)) {
       return res.status(400).json({ message: "Please enter a valid email" });
@@ -47,10 +46,23 @@ const createadmin = async (req, res) => {
     const admin = await newAdmin.save();
 
     const token = createToken(admin._id);
-    res.status(201).json({ success: true, message: 'Admin created successfully', admin, token });
+    res
+      .status(201)
+      .json({
+        success: true,
+        message: "Admin created successfully",
+        admin,
+        token,
+      });
   } catch (error) {
-    console.error('Error creating admin:', error);
-    res.status(500).json({ success: false, message: 'Internal server error', error: error.message });
+    console.error("Error creating admin:", error);
+    res
+      .status(500)
+      .json({
+        success: false,
+        message: "Internal server error",
+        error: error.message,
+      });
   }
 };
 
@@ -76,10 +88,6 @@ const adminlogin = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
-
-
-
 
 const creationrole = async (req, res) => {
   try {
@@ -107,60 +115,65 @@ const creationrole = async (req, res) => {
   }
 };
 
-
 const getalldata = async (req, res) => {
   try {
-    const alldata = await userModel.find({})
+    const alldata = await userModel.find({});
 
     const data = alldata.filter((item) => {
-      return item.role !== "superadmin"
-    })
+      return item.role !== "superadmin";
+    });
     res.status(200).send({
       success: true,
-      data
+      data,
     });
   } catch (error) {
     res
       .status(500)
       .send({ success: false, message: "internal server Error" + error });
   }
-}
+};
 
 const getdata_NC = async (req, res) => {
   try {
-    const alldata = await bookingmodel.find({})
+    const alldata = await bookingmodel.find({});
     const data = alldata.filter((item) => {
-      return item.orderfinalstatus == "Not Confirmed"
-    })
+      return item.orderfinalstatus == "Not Confirmed";
+    });
     res.status(200).send({
       success: true,
       message: "Not Confirmed",
-      data 
+      data,
     });
   } catch (error) {
     res
       .status(500)
       .send({ success: false, message: "internal server Error" + error });
   }
-}
+};
 
 const getdata_C = async (req, res) => {
   try {
-    const alldata = await bookingmodel.find({})
+    const alldata = await bookingmodel.find({});
     const data = alldata.filter((item) => {
-      return item.orderfinalstatus == "Confirmed"
-    })
+      return item.orderfinalstatus == "Confirmed";
+    });
     res.status(200).send({
       success: true,
       message: "Confirmed",
-      data 
+      data,
     });
   } catch (error) {
     res
       .status(500)
       .send({ success: false, message: "internal server Error" + error });
   }
-}
+};
 
-
-export { creationrole, getalldata, createadmin, adminlogin, getdata_NC, getdata_C };
+export {
+  creationrole,
+  getalldata,
+  createadmin,
+  adminlogin,
+  getdata_NC,
+  getdata_C,
+};
