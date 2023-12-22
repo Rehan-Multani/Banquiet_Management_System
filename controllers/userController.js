@@ -2,6 +2,7 @@ import userModel from "../models/userModel.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import validator from "validator";
+import adminNotification from "../models/adminnotificationModel/adminnotificationModel.js";
 
 //create token
 const createToken = (id) => {
@@ -79,7 +80,8 @@ const registerUser = async (req, res) => {
       password: hashedPassword,
     });
     const user = await newUser.save();
-    console.log(user.id);
+
+    // console.log(user.id);
     const token = createToken(user._id);
     res.status(200).json({ user, token });
   } catch (error) {
@@ -113,4 +115,21 @@ const getsaffwaiter = async (req, res) => {
     res.status(502).json({ message: error.message });
   }
 };
-export { loginUser, registerUser, getUser, getsaffwaiter };
+const verifyuser = async (req, res) => {
+  try {
+    const id = req.user.id;
+    const notification = req.body.notification;
+    const user = await userModel.findById(id).select("-password");
+
+    user.verify = true;
+    await user.save();
+
+    await adminNotification.findByIdAndDelete(notification);
+
+    res.status(200).json({ user, notification });
+  } catch (error) {
+    res.status(502).json({ message: error.message });
+  }
+};
+
+export { loginUser, registerUser, getUser, getsaffwaiter, verifyuser };

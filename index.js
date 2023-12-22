@@ -12,6 +12,7 @@ import taskRouter from "./routes/taskRoute.js";
 import forgotPasswordRouter from "./routes/forgotPassword.js";
 import bookingRouter from "./routes/createBookingRouter/createBookingRouter.js";
 import customerRouter from "./routes/customerRouter/customerRouter.js";
+import adminnotification from "./routes/adminnotificationRouter/adminnotificationRouter.js";
 
 //app config
 dotenv.config();
@@ -48,6 +49,7 @@ app.use("/api/customer", customerRouter);
 // super admin routes
 app.use("/api/superadmin", superAdmin);
 app.use("/api/admin", admin);
+app.use("/api/admin/notification", adminnotification);
 
 // notification route
 app.use("/api/notification",notification)
