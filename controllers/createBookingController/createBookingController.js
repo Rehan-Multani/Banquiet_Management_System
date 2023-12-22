@@ -5,6 +5,7 @@ import { createTransport } from "nodemailer";
 import userModel from "../../models/userModel.js";
 import adminModel from "../../models/adminModel/adminModel.js";
 import customerModel from "../../models/customerModel/customerModel.js";
+import adminNotification from "../../models/adminnotificationModel/adminnotificationModel.js";
 
 const sendMail = (email, orderManagerEmail, status, data) => {
   const transporter = createTransport({
@@ -132,10 +133,16 @@ const createbooking = async (req, res) => {
     const booking = await newBooking.save();
     sendMail(email, orderManagerEmail, "created", booking);
 
+    let adminnotification = await adminNotification.create({
+      creatorId: req.user.id,
+      message: message,
+      type: req.body.type,
+    });
     res.status(200).json({
       success: true,
       message: "Booking created successfully",
       booking,
+      adminnotification,
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
