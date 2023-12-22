@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 import userRouter from "./routes/userRoute.js";
 import superAdmin from "./routes/superAdminRoute/superAdminRoute.js";
 import admin from "./routes/adminRouter/adminRouter.js";
+import notification from "./routes/notification/notificationRoute.js";
 
 import taskRouter from "./routes/taskRoute.js";
 import forgotPasswordRouter from "./routes/forgotPassword.js";
@@ -47,6 +48,9 @@ app.use("/api/customer", customerRouter);
 // super admin routes
 app.use("/api/superadmin", superAdmin);
 app.use("/api/admin", admin);
+
+// notification route
+app.use("/notification",notification)
 
 //listen
 app.listen(port, () => console.log(`Listening on localhost:${port}`));
