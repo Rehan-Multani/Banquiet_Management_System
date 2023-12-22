@@ -40,20 +40,24 @@ const createadmin = async (req, res) => {
     const newAdmin = new adminmodel({
       email,
       password: hashedPassword,
-      notifications: notifications || [],
     });
 
     const admin = await newAdmin.save();
+    const allAdmins = await adminmodel.find({});
+
+    // Add the notification to each admin
+    for (const admin of allAdmins) {
+      admin.notifications.push(notifications);
+      await admin.save();
+    }
 
     const token = createToken(admin._id);
-    res
-      .status(201)
-      .json({
-        success: true,
-        message: "Admin created successfully",
-        admin,
-        token,
-      });
+    res.status(201).json({
+      success: true,
+      message: "Admin created successfully",
+      admin,
+      token,
+    });
   } catch (error) {
     console.error("Error creating admin:", error);
     res.status(500).json({
