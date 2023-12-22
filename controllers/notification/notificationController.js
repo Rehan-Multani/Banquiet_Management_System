@@ -3,16 +3,13 @@ import userModel from "../../models/userModel.js";
 
 const createnotification = async (req, res) => {
   try {
-    const admindata = await adminModel.find({ email: req.body.email });
-
-    admindata.forEach(async (item) => {
-      item.notifications.push({ message: req.body.notifications });
-      await item.save();
-    });
-
+    const admindata = await adminModel.findOne({ email: req.body.email });
+    console.log(admindata);
+    let newnotification = admindata.notifications.push(req.body.notifications[0]);
+    await admindata.save();
     res.status(200).send({
       success: true,
-      message: "Notification added successfully",
+      admindata,
     });
   } catch (error) {
     res
