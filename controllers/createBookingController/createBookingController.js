@@ -4,6 +4,7 @@ import bookingModel from "../../models/createbooking/createbookingModel.js";
 import { createTransport } from "nodemailer";
 import userModel from "../../models/userModel.js";
 import adminModel from "../../models/adminModel/adminModel.js";
+import customerModel from "../../models/customerModel/customerModel.js";
 
 const sendMail = (email, orderManagerEmail, status, data) => {
   const transporter = createTransport({
@@ -58,13 +59,6 @@ const createbooking = async (req, res) => {
     } = req.body;
     console.log(chef, servicedescription, servicename, waiter, items);
     // Check if user already exists
-    const exists = await bookingModel.findOne({ email: email });
-    if (exists) {
-      return res
-        .status(400)
-        .json({ success: false, message: "You are already booked" });
-    }
-
     // Validate fields
     const requiredFields = [
       customername,
@@ -99,6 +93,18 @@ const createbooking = async (req, res) => {
       });
     }
 
+    const exists = await customerModel.find({ email });
+    console.log(exists, "exists");
+    if (!exists.length) {
+      const newCustomer = new customerModel({
+        email,
+        name: customername,
+        address: "India",
+        mobile: mobilenumber,
+      });
+      const customer = await newCustomer.save();
+      console.log(customer);
+    }
     // Convert chef and waiter to arrays if they are not already
     const newBooking = new bookingModel({
       customername,
@@ -125,6 +131,7 @@ const createbooking = async (req, res) => {
       .select("email");
     const booking = await newBooking.save();
     sendMail(email, orderManagerEmail, "created", booking);
+
     res.status(200).json({
       success: true,
       message: "Booking created successfully",
