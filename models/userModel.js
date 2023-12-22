@@ -14,6 +14,7 @@ const userSchema = new mongoose.Schema({
   verify: { type: Boolean, default: false },
   password: { type: String, required: true, select: true },
   resetToken: { type: String, required: false },
+  notifications: [{ type: String }],
 });
 
 const userModel = mongoose.model("User", userSchema);

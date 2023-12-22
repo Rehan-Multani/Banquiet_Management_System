@@ -131,5 +131,33 @@ const verifyuser = async (req, res) => {
     res.status(502).json({ message: error.message });
   }
 };
+const deletenotification = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    console.log("userId", userId);
+    const user = await userModel.findById(userId);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+    user.notifications = [];
+    await user.save();
 
-export { loginUser, registerUser, getUser, getsaffwaiter, verifyuser };
+    res.status(200).json({
+      success: true,
+      message: "Notifications cleared successfully",
+      user,
+    });
+  } catch (error) {
+    res.status(502).json({ success: false, message: error.message });
+  }
+};
+export {
+  loginUser,
+  registerUser,
+  getUser,
+  getsaffwaiter,
+  verifyuser,
+  deletenotification,
+};
