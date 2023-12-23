@@ -125,6 +125,7 @@ const createbooking = async (req, res) => {
       items: finalItems,
       chef: finalChef,
       waiter: finalWaiter,
+      customerid: customer._id,
       userbookingid: req.user.id,
     });
     const { email: orderManagerEmail } = await userModel
@@ -163,7 +164,7 @@ const getsingleBooking = async (req, res) => {
   try {
     const user = await bookingModel
       .findOne({ _id: req.params.id })
-      .populate("userbookingid");
+      // .populate("userbookingid");
     res.status(200).json({ success: true, message: "GetSingle Booking", user });
   } catch (error) {
     res.status(502).json({ success: false, message: error.message });
@@ -285,9 +286,9 @@ const getBooking = async (req, res) => {
     const isAdmin = await adminModel.findById(req.user.id);
     let bookings;
     if (isAdmin) {
-      bookings = await bookingModel.find();
+      bookings = await bookingModel.find().populate('customerid');
     } else {
-      bookings = await bookingModel.find({ userbookingid: req.user.id });
+      bookings = await bookingModel.find({ userbookingid: req.user.id }).populate('customerid');
       console.log(bookings);
     }
     res.status(200).json({

@@ -5,9 +5,9 @@ const customerSchema = new mongoose.Schema({
   email: { type: String },
   address: { type: String },
   mobile: { type: Number },
-  userid: {
+  customerbookingid: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: "booking",
   },
 });
 
