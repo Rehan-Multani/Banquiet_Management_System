@@ -40,11 +40,12 @@ const deleteadminnotification = async (req, res) => {
       const notificationToDelete = await adminNotification.findByIdAndDelete(
         req.params.id
       );
-
+      const notifications = await adminNotification.find();
       if (notificationToDelete) {
         res.status(200).send({
           success: true,
           notificationToDelete,
+          notifications,
         });
       } else {
         res.status(404).send({

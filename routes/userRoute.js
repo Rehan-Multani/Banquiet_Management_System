@@ -14,7 +14,7 @@ router.post("/login", loginUser);
 router.post("/register", registerUser);
 router.get("/getuser", requireAuth, getUser);
 router.get("/saff-waiter", requireAuth, getsaffwaiter);
-router.get("/verify", requireAuth, verifyuser);
+router.post("/verify", requireAuth, verifyuser);
 router.delete("/notification", requireAuth, deletenotifications);
 
 export default router;

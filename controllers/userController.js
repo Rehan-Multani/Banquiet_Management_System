@@ -130,23 +130,23 @@ const getsaffwaiter = async (req, res) => {
 };
 const verifyuser = async (req, res) => {
   try {
-    const id = req.user.id;
-    const notification = req.body.notification;
+    const id = req.body.id;
+    const notificationId = req.body.notificationId;
     const user = await userModel.findById(id).select("-password");
 
     user.verify = true;
     await user.save();
 
-    await adminNotification.findByIdAndDelete(notification);
-
-    res.status(200).json({ user, notification });
+    await adminNotification.findByIdAndDelete(notificationId);
+    const notifications = await adminNotification.find();
+    res.status(200).json({ user, notifications });
   } catch (error) {
     res.status(502).json({ message: error.message });
   }
 };
 const deletenotifications = async (req, res) => {
   try {
-    const userId = req.params.id;
+    const userId = req.user.id;
     console.log("userId", userId);
     const user = await userModel.findById(userId);
     if (!user) {

@@ -136,12 +136,14 @@ const createbooking = async (req, res) => {
 
     const admindata = await userModel.findOne({ id: req.user.id });
     console.log(admindata);
-    let usernotification = admindata.notifications.push(req.body.message[0]);
+    let usernotification = admindata.notifications.push({
+      message: `Your order for ${customername} was created.`,
+    });
     await admindata.save();
     let adminnotification = await adminNotification.create({
       creatorId: req.user.id,
-      message: message,
-      type: req?.body?.type,
+      message: `Order created for ${customername} by ${admindata.name}`,
+      type: "information",
     });
 
     res.status(200).json({
