@@ -167,6 +167,43 @@ const getdata_C = async (req, res) => {
   }
 };
 
+const updateconfirmed = async (req, res) => {
+  try {
+    const orderId = req.params.id;
+
+    const order = await bookingmodel.findOneAndUpdate(
+
+      {
+        _id: orderId,
+        orderfinalstatus: 'Not Confirmed'
+      },
+      {
+        $set: {
+          orderfinalstatus: 'Confirmed',
+        }
+      },
+      { new: true }
+    );
+
+    if (order) {
+      res.status(200).json({
+        success: true,
+        message: 'Order status updated from Not Confirmed to Confirmed',
+        order,
+      });
+    } else {
+      res.status(404).json({
+        success: false,
+        message: 'Order not found or already confirmed',
+      });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+
+
 export {
   creationrole,
   getalldata,
@@ -174,4 +211,5 @@ export {
   adminlogin,
   getdata_NC,
   getdata_C,
+  updateconfirmed
 };
