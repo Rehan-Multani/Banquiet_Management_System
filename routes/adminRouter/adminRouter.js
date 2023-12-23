@@ -35,6 +35,5 @@ router.get("/getalldata", requireAuth, checkAdmin, getalldata);
 router.get("/order_notconfirmed", requireAuth, getdata_NC);
 
 router.get("/order_confirmed", requireAuth, getdata_C);
-router.get("/order_confirmed", requireAuth, getdata_C);
 
 export default router;

@@ -4,55 +4,55 @@ import Cdata from "../../models/customerModel/customerModel.js";
 
 //register user
 const addcustomer = async (req, res) => {
-    try {
-        const {
-            name,
-            email,
-            address,
-            mobile,
-        } = req.body;
+  try {
+    const {
+      name,
+      email,
+      address,
+      mobile,
+    } = req.body;
 
-        // Check if user already exists
-        const exists = await Cdata.findOne({ email: email });
-        if (exists) {
-            return res
-                .status(400)
-                .json({ success: false, message: "This email already exists" });
-        }
-
-        // Validate fields
-        const requiredFields = [name, email, address, mobile];
-        const isValidFields = requiredFields.every(
-            (field) => field && !validator.isEmpty(field.toString())
-        );
-
-        // Validate email format
-        const isValidEmail = validator.isEmail(email);
-
-        if (!isValidFields || !isValidEmail) {
-            return res.status(400).json({
-                success: false,
-                message: "Please provide valid details for all fields",
-            });
-        }
-        // Create a new customer entry
-        const newCustomer = new Cdata({
-            name,
-            email,
-            address,
-            mobile,
-            userid: req.user.id,
-        });
-
-        const customer = await newCustomer.save();
-        res.status(200).json({
-            success: true,
-            message: "Customer added successfully",
-            customer,
-        });
-    } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
+    // Check if user already exists
+    const exists = await Cdata.findOne({ email: email });
+    if (exists) {
+      return res
+        .status(400)
+        .json({ success: false, message: "This email already exists" });
     }
+
+    // Validate fields
+    const requiredFields = [name, email, address, mobile];
+    const isValidFields = requiredFields.every(
+      (field) => field && !validator.isEmpty(field.toString())
+    );
+
+    // Validate email format
+    const isValidEmail = validator.isEmail(email);
+
+    if (!isValidFields || !isValidEmail) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide valid details for all fields",
+      });
+    }
+    // Create a new customer entry
+    const newCustomer = new Cdata({
+      name,
+      email,
+      address,
+      mobile,
+      userid: req.user.id,
+    });
+
+    const customer = await newCustomer.save();
+    res.status(200).json({
+      success: true,
+      message: "Customer added successfully",
+      customer,
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
 };
 
 
@@ -115,9 +115,9 @@ const deletecustomer = async (req, res) => {
 };
 
 export {
-    addcustomer,
-    getsinglecustomer,
-    getcustomer,
-    deletecustomer,
-    updatecustomer
+  addcustomer,
+  getsinglecustomer,
+  getcustomer,
+  deletecustomer,
+  updatecustomer
 };

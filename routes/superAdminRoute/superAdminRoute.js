@@ -5,7 +5,7 @@ import userModel from "../../models/userModel.js";
 const router = express.Router();
 
 // checking is user super Admin or not function
-const checkSuperAdmin =  async (req, res, next) => {
+const checkSuperAdmin = async (req, res, next) => {
   const isSuperAdmin = await userModel.findById({ _id: req.user.id });
 
   if (isSuperAdmin.role == "superadmin") {

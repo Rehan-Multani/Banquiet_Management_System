@@ -52,7 +52,7 @@ app.use("/api/admin", admin);
 app.use("/api/admin/notification", adminnotification);
 
 // notification route
-app.use("/api/notification",notification)
+app.use("/api/notification", notification)
 
 //listen
 app.listen(port, () => console.log(`Listening on localhost:${port}`));
