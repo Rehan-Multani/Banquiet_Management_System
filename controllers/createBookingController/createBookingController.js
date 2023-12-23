@@ -286,6 +286,7 @@ const getBooking = async (req, res) => {
       bookings = await bookingModel.find();
     } else {
       bookings = await bookingModel.find({ userbookingid: req.user.id });
+      console.log(bookings);
     }
     res.status(200).json({
       success: true,
@@ -303,17 +304,19 @@ const getBookingByPage = async (req, res) => {
   try {
     // sendMail();
     const isAdmin = await adminModel.findById(req.user.id);
-    let bookings;
+    let bookings, totalData;
     if (isAdmin) {
+      totalData = await bookingModel.find();
       bookings = await bookingModel.find().skip(skip).limit(ITEMS_PER_PAGE);
     } else {
+      totalData = await bookingModel.find({ userbookingid: req.user.id });
       bookings = await bookingModel
         .find({ userbookingid: req.user.id })
         .skip(skip)
         .limit(ITEMS_PER_PAGE);
     }
-    console.log("bookings", bookings);
-    const totalDocuments = await bookingModel.countDocuments();
+    console.log("bookings", bookings, totalData);
+    const totalDocuments = totalData.length;
     res.status(200).json({
       success: true,
       message: "Bookings retrieved successfully",
