@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import validator from "validator";
 import adminNotification from "../models/adminnotificationModel/adminnotificationModel.js";
+import adminModel from "../models/adminModel/adminModel.js";
 
 //create token
 const createToken = (id) => {
@@ -94,6 +95,12 @@ const getUser = async (req, res) => {
   const id = req.user.id;
   try {
     const user = await userModel.find({ _id: id });
+    if (!user.length) {
+      const user = await adminModel.find({ _id: id });
+      console.log(user);
+      res.status(200).json({ user: user[0] });
+      return;
+    }
     res.status(200).json({ user: user[0] });
   } catch (error) {
     res.status(502).json({ message: error.message });

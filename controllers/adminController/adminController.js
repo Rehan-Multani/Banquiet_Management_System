@@ -46,14 +46,12 @@ const createadmin = async (req, res) => {
     const admin = await newAdmin.save();
 
     const token = createToken(admin._id);
-    res
-      .status(201)
-      .json({
-        success: true,
-        message: "Admin created successfully",
-        admin,
-        token,
-      });
+    res.status(201).json({
+      success: true,
+      message: "Admin created successfully",
+      admin,
+      token,
+    });
   } catch (error) {
     console.error("Error creating admin:", error);
     res.status(500).json({
@@ -81,7 +79,7 @@ const adminlogin = async (req, res) => {
     }
     const token = createToken(admindata._id);
     console.log("datatoken", token);
-    res.status(200).json({ admindata, token });
+    res.status(200).json({ user: admindata, token });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
