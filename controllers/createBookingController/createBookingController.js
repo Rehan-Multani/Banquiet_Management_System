@@ -130,18 +130,25 @@ const createbooking = async (req, res) => {
     const { email: orderManagerEmail } = await userModel
       .findById(req.user.id)
       .select("email");
+
     const booking = await newBooking.save();
     sendMail(email, orderManagerEmail, "created", booking);
 
+    const admindata = await userModel.findOne({ id: req.user.id });
+    console.log(admindata);
+    let usernotification = admindata.notifications.push(req.body.message[0]);
+    await admindata.save();
     let adminnotification = await adminNotification.create({
       creatorId: req.user.id,
       message: message,
-      type: req.body.type,
+      type: req?.body?.type,
     });
+
     res.status(200).json({
       success: true,
       message: "Booking created successfully",
       booking,
+      usernotification,
       adminnotification,
     });
   } catch (error) {
@@ -247,10 +254,23 @@ const updateBooking = async (req, res) => {
       .findById(req.user.id)
       .select("email");
     sendMail(email, orderManagerEmail, "updated", updatedBooking);
+
+    let adminnotification = await adminNotification.create({
+      creatorId: req.user.id,
+      message: message,
+      type: req?.body?.type,
+    });
+    const admindata = await userModel.findOne({ id: req.user.id });
+    console.log(admindata);
+    let usernotification = admindata.notifications.push(req.body.message[0]);
+    await admindata.save();
+
     res.status(200).json({
       success: true,
       message: "Booking updated successfully",
       booking: updatedBooking,
+      adminnotification,
+      admindata,
     });
   } catch (error) {
     res.status(502).json({ message: error.message });

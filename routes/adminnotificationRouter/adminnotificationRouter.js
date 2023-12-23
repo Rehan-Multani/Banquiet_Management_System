@@ -1,5 +1,8 @@
 import express from "express";
-import { createadminnotification } from "../../controllers/adminnotificationController/adminnotificationController.js";
+import {
+  createadminnotification,
+  deleteadminnotification,
+} from "../../controllers/adminnotificationController/adminnotificationController.js";
 import requireAuth from "../../middleware/requireAuth.js";
 import userModel from "../../models/userModel.js";
 const router = express.Router();
@@ -18,5 +21,6 @@ const checkAdmin = async (req, res, next) => {
 
 // routers
 router.post("/", createadminnotification);
+router.delete("/:id", deleteadminnotification);
 
 export default router;
