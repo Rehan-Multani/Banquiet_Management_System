@@ -260,12 +260,17 @@ const updateBooking = async (req, res) => {
       message: message,
       type: req?.body?.type,
     });
+    const admindata = await userModel.findOne({ id: req.user.id });
+    console.log(admindata);
+    let usernotification = admindata.notifications.push(req.body.message[0]);
+    await admindata.save();
 
     res.status(200).json({
       success: true,
       message: "Booking updated successfully",
       booking: updatedBooking,
       adminnotification,
+      admindata,
     });
   } catch (error) {
     res.status(502).json({ message: error.message });
