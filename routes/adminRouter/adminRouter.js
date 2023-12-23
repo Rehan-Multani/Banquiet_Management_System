@@ -6,6 +6,7 @@ import {
   adminlogin,
   getdata_NC,
   getdata_C,
+  updateconfirmed
 } from "../../controllers/adminController/adminController.js";
 import requireAuth from "../../middleware/requireAuth.js";
 import userModel from "../../models/userModel.js";
