@@ -21,9 +21,12 @@ const loginUser = async (req, res) => {
       return res.status(400).json({ message: "Please enter all fields" });
     }
     const user = await userModel.findOne({ email });
-
+    console.log(user);
     if (!user) {
       return res.status(400).json({ message: "User does not exist" });
+    }
+    if (!user.verify) {
+      return res.status(400).json({ message: "Not verified yet" });
     }
     // console.log(password, user);
     const isMatch = await bcrypt.compare(password, user.password);
@@ -81,10 +84,13 @@ const registerUser = async (req, res) => {
       password: hashedPassword,
     });
     const user = await newUser.save();
+    await adminNotification.create({
+      creatorId: user._id,
+      message: `Please verify ${user.name}`,
+      type: "verify",
+    });
 
-    // console.log(user.id);
-    const token = createToken(user._id);
-    res.status(200).json({ user, token });
+    res.status(200).json({ user });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
