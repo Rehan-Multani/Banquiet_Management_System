@@ -6,6 +6,7 @@ import {
   getsaffwaiter,
   deletenotifications,
   verifyuser,
+  getAllUsers,
 } from "../controllers/userController.js";
 import requireAuth from "../middleware/requireAuth.js";
 const router = express.Router();
@@ -16,5 +17,7 @@ router.get("/getuser", requireAuth, getUser);
 router.get("/saff-waiter", requireAuth, getsaffwaiter);
 router.post("/verify", requireAuth, verifyuser);
 router.delete("/notification", requireAuth, deletenotifications);
+
+router.get("/", getAllUsers);
 
 export default router;
