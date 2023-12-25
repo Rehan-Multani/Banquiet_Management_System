@@ -166,6 +166,15 @@ const deletenotifications = async (req, res) => {
     res.status(502).json({ success: false, message: error.message });
   }
 };
+
+export const getAllUsers = async (req, res) => {
+  try {
+    const user = await userModel.find();
+    res.status(200).json({ user });
+  } catch (error) {
+    res.status(502).json({ message: error.message });
+  }
+};
 export {
   loginUser,
   registerUser,
