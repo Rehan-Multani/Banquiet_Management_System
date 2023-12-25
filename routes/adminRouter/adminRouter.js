@@ -7,6 +7,7 @@ import {
   getdata_NC,
   getdata_C,
   updateconfirmed,
+  adduser,
 } from "../../controllers/adminController/adminController.js";
 import requireAuth from "../../middleware/requireAuth.js";
 import userModel from "../../models/userModel.js";
@@ -30,6 +31,8 @@ router.post("/createadmin", createadmin);
 router.post("/login", adminlogin);
 
 router.post("/creation/:id", requireAuth, checkAdmin, creationrole);
+
+router.post("/adduser", requireAuth, checkAdmin, adduser);
 
 router.get("/getalldata", requireAuth, checkAdmin, getalldata);
 

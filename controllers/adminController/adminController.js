@@ -4,6 +4,7 @@ import bookingmodel from "../../models/createbooking/createbookingModel.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import validator from "validator";
+import adminNotification from "../../models/adminnotificationModel/adminnotificationModel.js";
 
 const createToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -170,15 +171,14 @@ const updateconfirmed = async (req, res) => {
     const orderId = req.params.id;
 
     const order = await bookingmodel.findOneAndUpdate(
-
       {
         _id: orderId,
-        orderfinalstatus: 'Not Confirmed'
+        orderfinalstatus: "Not Confirmed",
       },
       {
         $set: {
-          orderfinalstatus: 'Confirmed',
-        }
+          orderfinalstatus: "Confirmed",
+        },
       },
       { new: true }
     );
@@ -186,13 +186,13 @@ const updateconfirmed = async (req, res) => {
     if (order) {
       res.status(200).json({
         success: true,
-        message: 'Order status updated from Not Confirmed to Confirmed',
+        message: "Order status updated from Not Confirmed to Confirmed",
         order,
       });
     } else {
       res.status(404).json({
         success: false,
-        message: 'Order not found or already confirmed',
+        message: "Order not found or already confirmed",
       });
     }
   } catch (error) {
@@ -200,7 +200,60 @@ const updateconfirmed = async (req, res) => {
   }
 };
 
+const adduser = async (req, res) => {
+  const { name, email, companyname, companyid, contact, role, password } =
+    req.body;
+  console.log(name, email, password);
+  try {
+    //check if user already exists
+    const exists = await userModel.findOne({ email });
+    if (exists) {
+      return res.status(400).json({ message: "User already exists" });
+    }
+    if (
+      validator.isEmpty(name) ||
+      validator.isEmpty(email) ||
+      validator.isEmpty(companyname) ||
+      validator.isEmpty(companyid) ||
+      validator.isEmpty(contact) ||
+      validator.isEmpty(role) ||
+      validator.isEmpty(password)
+    ) {
+      return res.status(400).json({ message: "Please enter all fields" });
+    }
+    if (!validator.isEmail(email)) {
+      return res.status(400).json({ message: "Please enter a valid email" });
+    }
+    if (!validator.isStrongPassword(password)) {
+      return res
+        .status(400)
+        .json({ message: "Please enter a strong password" });
+    }
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
+    const newUser = new userModel({
+      name,
+      email,
+      companyname,
+      companyid,
+      contact,
+      role,
+      password: hashedPassword,
+      verify: true,
+    });
+    const user = await newUser.save();
+    await adminNotification.create({
+      creatorId: user._id,
+      message: `Please verify ${user.name}`,
+      type: "verify",
+    });
+
+    res.status(200).json({ user });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 export {
   creationrole,
@@ -209,5 +262,6 @@ export {
   adminlogin,
   getdata_NC,
   getdata_C,
-  updateconfirmed
+  updateconfirmed,
+  adduser,
 };
