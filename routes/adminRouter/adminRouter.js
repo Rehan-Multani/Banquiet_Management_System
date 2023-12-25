@@ -8,6 +8,7 @@ import {
   getdata_C,
   updateconfirmed,
   adduser,
+  updateuser,
 } from "../../controllers/adminController/adminController.js";
 import requireAuth from "../../middleware/requireAuth.js";
 import userModel from "../../models/userModel.js";
@@ -32,14 +33,17 @@ router.post("/login", adminlogin);
 
 router.post("/creation/:id", requireAuth, checkAdmin, creationrole);
 
-router.post("/adduser", requireAuth, checkAdmin, adduser);
-
 router.get("/getalldata", requireAuth, checkAdmin, getalldata);
 
 router.get("/order_notconfirmed", requireAuth, getdata_NC);
 
 router.get("/order_confirmed", requireAuth, getdata_C);
 
-router.get("/:id", requireAuth, updateconfirmed);
+router.put("/:id", requireAuth, updateconfirmed);
+
+// user by admin
+
+router.post("/adduser", requireAuth, checkAdmin, adduser);
+router.put("/updateuser/:id", updateuser);
 
 export default router;
