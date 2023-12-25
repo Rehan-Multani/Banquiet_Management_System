@@ -18,6 +18,6 @@ router.get("/saff-waiter", requireAuth, getsaffwaiter);
 router.post("/verify", requireAuth, verifyuser);
 router.delete("/notification", requireAuth, deletenotifications);
 
-router.get("/", getAllUsers);
+router.get("/", requireAuth, getAllUsers);
 
 export default router;
