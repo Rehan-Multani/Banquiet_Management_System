@@ -44,6 +44,6 @@ router.put("/:id", requireAuth, updateconfirmed);
 // user by admin
 
 router.post("/adduser", requireAuth, checkAdmin, adduser);
-router.put("/updateuser/:id", updateuser);
+router.put("/updateuser/:id", requireAuth, checkAdmin, updateuser);
 
 export default router;
