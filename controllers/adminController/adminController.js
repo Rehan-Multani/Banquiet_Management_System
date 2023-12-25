@@ -243,12 +243,6 @@ const adduser = async (req, res) => {
       verify: true,
     });
     const user = await newUser.save();
-    await adminNotification.create({
-      creatorId: user._id,
-      message: `Please verify ${user.name}`,
-      type: "verify",
-    });
-
     res.status(200).json({ user });
   } catch (error) {
     res.status(500).json({ message: error.message });
