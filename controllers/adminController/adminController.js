@@ -249,6 +249,64 @@ const adduser = async (req, res) => {
   }
 };
 
+const updateuser = async (req, res) => {
+  try {
+    const existingUser = await userModel
+      .findById(req.params.id)
+      .select("+password");
+    if (!existingUser) {
+      return res.status(400).json({ message: "User not found" });
+    }
+
+    const {
+      name,
+      email,
+      companyname,
+      companyid,
+      contact,
+      role,
+      password,
+      verify,
+    } = req.body;
+
+    const salt = await bcrypt.genSalt(10);
+
+    existingUser.name = name !== undefined ? name : existingUser.name;
+    existingUser.email = email !== undefined ? email : existingUser.email;
+    existingUser.companyname =
+      companyname !== undefined ? companyname : existingUser.companyname;
+    existingUser.companyid =
+      companyid !== undefined ? companyid : existingUser.companyid;
+    existingUser.contact =
+      contact !== undefined ? contact : existingUser.contact;
+    existingUser.role = role !== undefined ? role : existingUser.role;
+
+    // Check if password is provided and update it
+    if (password !== undefined) {
+      existingUser.password = await bcrypt.hash(password, salt);
+    }
+
+    existingUser.verify = verify !== undefined ? verify : existingUser.verify;
+
+    const updatedUser = await existingUser.save();
+
+    res.status(200).json({ user: updatedUser });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const deleteuser = async (req, res) => {
+  try {
+    const deleteUser = await userModel.findByIdAndDelete(req.params.id);
+    res
+      .status(200)
+      .json({ user: deleteUser, message: "User deleted successfully...." });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 export {
   creationrole,
   getalldata,
@@ -258,4 +316,6 @@ export {
   getdata_C,
   updateconfirmed,
   adduser,
+  updateuser,
+  deleteuser,
 };
