@@ -37,6 +37,6 @@ router.get("/order_notconfirmed", requireAuth, getdata_NC);
 
 router.get("/order_confirmed", requireAuth, getdata_C);
 
-router.put("/:id", requireAuth, updateconfirmed);
+router.get("/:id", requireAuth, updgit addateconfirmed);
 
 export default router;
