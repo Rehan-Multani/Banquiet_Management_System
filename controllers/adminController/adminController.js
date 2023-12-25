@@ -248,6 +248,7 @@ const adduser = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 const updateuser = async (req, res) => {
   try {
     const existingUser = await userModel
@@ -295,6 +296,17 @@ const updateuser = async (req, res) => {
   }
 };
 
+const deleteuser = async (req, res) => {
+  try {
+    const deleteUser = await userModel.findByIdAndDelete(req.params.id);
+    res
+      .status(200)
+      .json({ user: deleteUser, message: "User deleted successfully...." });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 export {
   creationrole,
   getalldata,
@@ -305,4 +317,5 @@ export {
   updateconfirmed,
   adduser,
   updateuser,
+  deleteuser,
 };

@@ -9,6 +9,7 @@ import {
   updateconfirmed,
   adduser,
   updateuser,
+  deleteuser
 } from "../../controllers/adminController/adminController.js";
 import requireAuth from "../../middleware/requireAuth.js";
 import userModel from "../../models/userModel.js";
@@ -45,5 +46,6 @@ router.put("/:id", requireAuth, updateconfirmed);
 
 router.post("/adduser", requireAuth, checkAdmin, adduser);
 router.put("/updateuser/:id", requireAuth, checkAdmin, updateuser);
+router.delete("/deleteuser/:id", requireAuth, checkAdmin, deleteuser);
 
 export default router;
