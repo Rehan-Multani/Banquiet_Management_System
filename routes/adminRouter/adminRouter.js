@@ -9,7 +9,7 @@ import {
   updateconfirmed,
   adduser,
   updateuser,
-  deleteuser
+  deleteuser,
 } from "../../controllers/adminController/adminController.js";
 import requireAuth from "../../middleware/requireAuth.js";
 import userModel from "../../models/userModel.js";
@@ -44,8 +44,8 @@ router.put("/:id", requireAuth, updateconfirmed);
 
 // user by admin
 
-router.post("/adduser", requireAuth, checkAdmin, adduser);
-router.put("/updateuser/:id", requireAuth, checkAdmin, updateuser);
-router.delete("/deleteuser/:id", requireAuth, checkAdmin, deleteuser);
+router.post("/adduser", requireAuth, adduser);
+router.put("/updateuser/:id", requireAuth, updateuser);
+router.delete("/deleteuser/:id", requireAuth, deleteuser);
 
 export default router;
