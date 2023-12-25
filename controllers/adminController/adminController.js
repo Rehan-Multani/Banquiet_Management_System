@@ -4,6 +4,7 @@ import bookingmodel from "../../models/createbooking/createbookingModel.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import validator from "validator";
+import adminNotification from "../../models/adminnotificationModel/adminnotificationModel.js";
 
 const createToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
