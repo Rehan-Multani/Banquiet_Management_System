@@ -94,19 +94,22 @@ const createbooking = async (req, res) => {
       });
     }
     let finalCusId;
-    const curCustomer = await customerModel.find({ email });
+    const curCustomer = await customerModel.findOne({ email });
     console.log(curCustomer, "curCustomer");
-    if (!curCustomer.length) {
+    if (!curCustomer) {
       const newCustomer = new customerModel({
         email,
         name: customername,
         address: "India",
         mobile: mobilenumber,
+        totalOrders: 1,
       });
       const customer = await newCustomer.save();
       finalCusId = customer._id;
     } else {
-      finalCusId = curCustomer[0]._id;
+      curCustomer.totalOrders = curCustomer.totalOrders + 1;
+      await curCustomer.save();
+      finalCusId = curCustomer._id;
     }
     // Convert chef and waiter to arrays if they are not already
     const newBooking = new bookingModel({

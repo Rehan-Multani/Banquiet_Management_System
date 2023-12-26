@@ -9,6 +9,7 @@ const customerSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "booking",
   },
+  totalOrders: { type: Number, default: 0 },
 });
 
 const customerModel = mongoose.model("customer", customerSchema);
