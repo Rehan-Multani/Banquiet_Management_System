@@ -38,7 +38,7 @@ const sendMail = (email, orderManagerEmail, status, data) => {
 
 // function that check if booking dates are available or not
 
-const isBookingDateAvailable = async (fromDate, toDate) => {
+const isBookingDateAvailable = async (fromDate, toDate, startTime, endTime) => {
   try {
     const existingBookings = await bookingModel.find({
       $or: [
@@ -46,12 +46,16 @@ const isBookingDateAvailable = async (fromDate, toDate) => {
           $and: [
             { bookingfrom: { $lte: fromDate } },
             { bookingto: { $gte: fromDate } },
+            { timestart: { $lte: endTime } },
+            { timeend: { $gte: startTime } },
           ],
         },
         {
           $and: [
             { bookingfrom: { $lte: toDate } },
             { bookingto: { $gte: toDate } },
+            { timestart: { $lte: endTime } },
+            { timeend: { $gte: startTime } },
           ],
         },
       ],
@@ -124,7 +128,9 @@ const createbooking = async (req, res) => {
     // check booking
     const isBookingAvailable = await isBookingDateAvailable(
       bookingfrom,
-      bookingto
+      bookingto,
+      timestart,
+      timeend
     );
 
     if (!isBookingAvailable) {
