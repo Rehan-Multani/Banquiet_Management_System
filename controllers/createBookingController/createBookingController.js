@@ -36,6 +36,33 @@ const sendMail = (email, orderManagerEmail, status, data) => {
   });
 };
 
+// function that check if booking dates are available or not
+
+const isBookingDateAvailable = async (fromDate, toDate) => {
+  try {
+    const existingBookings = await bookingModel.find({
+      $or: [
+        {
+          $and: [
+            { bookingfrom: { $lte: fromDate } },
+            { bookingto: { $gte: fromDate } },
+          ],
+        },
+        {
+          $and: [
+            { bookingfrom: { $lte: toDate } },
+            { bookingto: { $gte: toDate } },
+          ],
+        },
+      ],
+    });
+
+    return existingBookings.length === 0;
+  } catch (error) {
+    throw new Error("Error checking booking availability");
+  }
+};
+
 //register user
 const createbooking = async (req, res) => {
   try {
@@ -93,6 +120,20 @@ const createbooking = async (req, res) => {
         message: "Please provide valid details for all fields",
       });
     }
+
+    // check booking
+    const isBookingAvailable = await isBookingDateAvailable(
+      bookingfrom,
+      bookingto
+    );
+
+    if (!isBookingAvailable) {
+      return res.status(400).json({
+        success: false,
+        message: "Booking dates are not available.",
+      });
+    }
+
     let finalCusId;
     const curCustomer = await customerModel.findOne({ email });
     console.log(curCustomer, "curCustomer");
