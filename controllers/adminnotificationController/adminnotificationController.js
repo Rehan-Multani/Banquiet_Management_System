@@ -1,10 +1,24 @@
 import adminModel from "../../models/adminModel/adminModel.js";
 import adminNotification from "../../models/adminnotificationModel/adminnotificationModel.js";
+import superAdminNotification from "../../models/superAdminNotiModel.js";
 import userModel from "../../models/userModel.js";
 
 const getAdminNotification = async (req, res) => {
   try {
     const notifications = await adminNotification.find();
+    res.status(200).send({
+      success: true,
+      notifications,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .send({ success: false, message: "internal server Error" + error });
+  }
+};
+const getSuperAdminNotification = async (req, res) => {
+  try {
+    const notifications = await superAdminNotification.find();
     res.status(200).send({
       success: true,
       notifications,
@@ -70,5 +84,6 @@ const deleteadminnotification = async (req, res) => {
 export {
   getAdminNotification,
   createadminnotification,
+  getSuperAdminNotification,
   deleteadminnotification,
 };

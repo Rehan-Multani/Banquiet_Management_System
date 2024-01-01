@@ -5,6 +5,8 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import validator from "validator";
 import adminNotification from "../../models/adminnotificationModel/adminnotificationModel.js";
+import superAdminNotification from "../../models/superAdminNotiModel.js";
+import adminModel from "../../models/adminModel/adminModel.js";
 
 const createToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -14,7 +16,15 @@ const createToken = (id) => {
 
 const createadmin = async (req, res) => {
   try {
-    const { email, password, notifications } = req.body;
+    const {
+      email,
+      password,
+      name,
+      companyname,
+      companyid,
+      contact,
+      notifications,
+    } = req.body;
 
     const exists = await adminmodel.findOne({ email });
     if (exists) {
@@ -41,17 +51,25 @@ const createadmin = async (req, res) => {
     const newAdmin = new adminmodel({
       email,
       password: hashedPassword,
+      name,
+      contact,
+      companyid,
+      companyname,
       notifications: notifications || [],
     });
 
     const admin = await newAdmin.save();
 
-    const token = createToken(admin._id);
+    await superAdminNotification.create({
+      creatorId: admin._id,
+      message: `Please verify ${admin.name}`,
+      type: "verify",
+    });
+
     res.status(201).json({
       success: true,
-      message: "Admin created successfully",
+      message: "Verification from super admin pending",
       admin,
-      token,
     });
   } catch (error) {
     console.error("Error creating admin:", error);
@@ -70,6 +88,11 @@ const adminlogin = async (req, res) => {
       return res.status(400).json({ message: "Please enter all fields" });
     }
     const admindata = await adminmodel.findOne({ email });
+    if (!admindata.verify) {
+      return res
+        .status(400)
+        .json({ message: "Please wait for your verification" });
+    }
     if (!admindata) {
       return res.status(400).json({ message: "User does not exist" });
     }
@@ -83,6 +106,41 @@ const adminlogin = async (req, res) => {
     res.status(200).json({ user: admindata, token });
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+const superAdminLogin = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    if (!email || !password) {
+      return res.status(400).json({ message: "Please enter all fields" });
+    }
+    const check = await bcrypt.compare(password, process.env.SUPER_PW);
+    if (email !== process.env.SUPER_EMAIL || !check) {
+      return res
+        .status(400)
+        .json({ message: "Please enter valid credentials" });
+    }
+
+    const token = createToken("834787584375");
+    res.status(200).json({ user: { email: process.env.SUPER_EMAIL }, token });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+const verifyadmin = async (req, res) => {
+  try {
+    const id = req.body.id;
+    const notificationId = req.body.notificationId;
+    const admin = await adminModel.findById(id).select("-password");
+
+    admin.verify = true;
+    await admin.save();
+
+    await superAdminNotification.findByIdAndDelete(notificationId);
+    const notifications = await superAdminNotification.find();
+    res.status(200).json({ user: admin, notifications });
+  } catch (error) {
+    res.status(502).json({ message: error.message });
   }
 };
 
@@ -306,16 +364,32 @@ const deleteuser = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+const getAllAdmin = async (req, res) => {
+  try {
+    const data = await adminModel.find({});
 
+    res.status(200).send({
+      success: true,
+      user: data,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .send({ success: false, message: "internal server Error" + error });
+  }
+};
 export {
   creationrole,
   getalldata,
   createadmin,
   adminlogin,
   getdata_NC,
+  getAllAdmin,
   getdata_C,
   updateconfirmed,
+  superAdminLogin,
   adduser,
+  verifyadmin,
   updateuser,
   deleteuser,
 };

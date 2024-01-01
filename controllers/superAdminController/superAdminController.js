@@ -1,36 +1,23 @@
-import userModel from "../../models/userModel.js";
-
-const creationrole = async (req, res) => {
+import adminModel from "../../models/superAdminModel.js";
+const superAdminLogin = async (req, res) => {
+  const { email, password } = req.body;
   try {
-    const updatecreationID = req.params.id;
-    const ifupdated = await userModel.findByIdAndUpdate(updatecreationID, {
-      role: req.body.role,
-    });
+    if (!email || !password) {
+      return res.status(400).json({ message: "Please enter all fields" });
+    }
+    const check = await bcrypt.compare(password, process.env.SUPER_PW);
+    if (email !== process.env.SUPER_EMAIL || !check) {
+      return res
+        .status(400)
+        .json({ message: "Please enter valid credentials" });
+    }
+    // const superAdmin = await superAdminModel.find({ email });
 
-    res.status(200).send({
-      success: true,
-      message: `${req.body.role} is updated successfully..`,
-    });
+    // const token = createToken(superAdmin._id);
+    res.status(200).json({ user: { email: process.env.SUPER_EMAIL }, token });
   } catch (error) {
-    res
-      .status(500)
-      .send({ success: false, message: "internal server Error" + error });
+    res.status(500).json({ message: error.message });
   }
 };
 
-
-const getalldata = async (req, res) => {
-  try {
-    const alldata = await userModel.find({})
-    res.status(200).send({
-      success: true,
-      alldata
-    });
-  } catch (error) {
-    res
-      .status(500)
-      .send({ success: false, message: "internal server Error" + error });
-  }
-}
-
-export { creationrole, getalldata };
+export { superAdminLogin };

@@ -2,9 +2,10 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
+import bcrypt from "bcrypt";
 
 import userRouter from "./routes/userRoute.js";
-import superAdmin from "./routes/superAdminRoute/superAdminRoute.js";
+// import superAdmin from "./routes/superAdminRoute/superAdminRoute.js";
 import admin from "./routes/adminRouter/adminRouter.js";
 import notification from "./routes/notification/notificationRoute.js";
 
@@ -39,6 +40,17 @@ mongoose.connect(
   }
 );
 
+const hashPw = async (req, res) => {
+  const { password } = req.body;
+
+  const salt = await bcrypt.genSalt(10);
+  console.log(password, salt);
+  const hashed = await bcrypt.hash(password, salt);
+  return res.status(200).json({ password: hashed });
+};
+
+app.post("/hash", hashPw);
+
 //api endpoints
 app.use("/api/user", userRouter);
 app.use("/api/task", taskRouter);
@@ -47,12 +59,12 @@ app.use("/api/booking", bookingRouter);
 app.use("/api/customer", customerRouter);
 
 // super admin routes
-app.use("/api/superadmin", superAdmin);
+// app.use("/api/superadmin", superAdmin);
 app.use("/api/admin", admin);
 app.use("/api/admin/notification", adminnotification);
 
 // notification route
-app.use("/api/notification", notification)
+app.use("/api/notification", notification);
 
 //listen
 app.listen(port, () => console.log(`Listening on localhost:${port}`));

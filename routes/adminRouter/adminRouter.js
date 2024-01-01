@@ -10,6 +10,9 @@ import {
   adduser,
   updateuser,
   deleteuser,
+  superAdminLogin,
+  getAllAdmin,
+  verifyadmin,
 } from "../../controllers/adminController/adminController.js";
 import requireAuth from "../../middleware/requireAuth.js";
 import userModel from "../../models/userModel.js";
@@ -32,6 +35,8 @@ router.post("/createadmin", createadmin);
 
 router.post("/login", adminlogin);
 
+router.post("/superlogin", superAdminLogin);
+
 router.post("/creation/:id", requireAuth, checkAdmin, creationrole);
 
 router.get("/getalldata", requireAuth, checkAdmin, getalldata);
@@ -41,6 +46,10 @@ router.get("/order_notconfirmed", requireAuth, getdata_NC);
 router.get("/order_confirmed", requireAuth, getdata_C);
 
 router.put("/:id", requireAuth, updateconfirmed);
+
+router.get("/", requireAuth, getAllAdmin);
+
+router.post("/verify", requireAuth, verifyadmin);
 
 // user by admin
 
