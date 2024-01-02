@@ -33,6 +33,11 @@ const bookingSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "customer",
   },
+  companyid: {
+    type: String,
+  },
+  sgst: { type: String },
+  cgst: { type: String },
 });
 
 const bookingModel = mongoose.model("booking", bookingSchema);

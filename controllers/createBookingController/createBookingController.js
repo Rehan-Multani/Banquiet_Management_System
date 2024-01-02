@@ -158,6 +158,14 @@ const createbooking = async (req, res) => {
       await curCustomer.save();
       finalCusId = curCustomer._id;
     }
+    let companyid;
+    const data = await userModel.findById(req.user.id);
+    if (data) {
+      companyid = data.companyid;
+    } else {
+      const admin = await adminModel.findById(req.user.id);
+      companyid = admin.companyid;
+    }
     // Convert chef and waiter to arrays if they are not already
     const newBooking = new bookingModel({
       customername,
@@ -174,13 +182,14 @@ const createbooking = async (req, res) => {
       servicedescription,
       serviceprice,
       orderfinalstatus,
+      companyid,
       items: finalItems,
       chef: finalChef,
       waiter: finalWaiter,
       customerid: finalCusId,
       userbookingid: req.user.id,
     });
-    const data = await userModel.findById(req.user.id);
+
     const booking = await newBooking.save();
     if (data) {
       sendMail(email, data.email, "created", booking);
@@ -338,7 +347,9 @@ const getBooking = async (req, res) => {
     const isAdmin = await adminModel.findById(req.user.id);
     let bookings;
     if (isAdmin) {
-      bookings = await bookingModel.find().populate("customerid");
+      bookings = await bookingModel
+        .find({ companyid: isAdmin.companyid })
+        .populate("customerid");
     } else {
       bookings = await bookingModel
         .find({ userbookingid: req.user.id })
