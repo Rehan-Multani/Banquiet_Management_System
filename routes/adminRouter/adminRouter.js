@@ -13,6 +13,8 @@ import {
   superAdminLogin,
   getAllAdmin,
   verifyadmin,
+  updateAdmin,
+  deleteadmin,
 } from "../../controllers/adminController/adminController.js";
 import requireAuth from "../../middleware/requireAuth.js";
 import userModel from "../../models/userModel.js";
@@ -50,6 +52,9 @@ router.put("/:id", requireAuth, updateconfirmed);
 router.get("/", requireAuth, getAllAdmin);
 
 router.post("/verify", requireAuth, verifyadmin);
+
+router.put("/update/:id", requireAuth, updateAdmin);
+router.delete("/:id", requireAuth, deleteadmin);
 
 // user by admin
 

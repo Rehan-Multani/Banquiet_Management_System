@@ -2,8 +2,9 @@ import express from "express";
 import {
   createadminnotification,
   deleteadminnotification,
+  deletesuperadminnotification,
   getAdminNotification,
-  getSuperAdminNotification
+  getSuperAdminNotification,
 } from "../../controllers/adminnotificationController/adminnotificationController.js";
 import requireAuth from "../../middleware/requireAuth.js";
 import userModel from "../../models/userModel.js";
@@ -24,7 +25,9 @@ const checkAdmin = async (req, res, next) => {
 // routers
 router.get("/", requireAuth, getAdminNotification);
 router.get("/super", requireAuth, getSuperAdminNotification);
+router.delete("/super/:id", requireAuth, deletesuperadminnotification);
 router.post("/", createadminnotification);
+
 router.delete("/:id", deleteadminnotification);
 
 export default router;

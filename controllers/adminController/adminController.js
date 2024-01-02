@@ -24,6 +24,7 @@ const createadmin = async (req, res) => {
       companyid,
       contact,
       notifications,
+      verify,
     } = req.body;
 
     const exists = await adminmodel.findOne({ email });
@@ -56,21 +57,26 @@ const createadmin = async (req, res) => {
       companyid,
       companyname,
       notifications: notifications || [],
+      verify,
     });
-
     const admin = await newAdmin.save();
+    if (!verify) {
+      await superAdminNotification.create({
+        creatorId: admin._id,
+        message: `Please verify ${admin.name}`,
+        type: "verify",
+      });
 
-    await superAdminNotification.create({
-      creatorId: admin._id,
-      message: `Please verify ${admin.name}`,
-      type: "verify",
-    });
-
-    res.status(201).json({
-      success: true,
-      message: "Verification from super admin pending",
-      admin,
-    });
+      res.status(201).json({
+        success: true,
+        message: "Successful.Please wait for verification.",
+        admin,
+      });
+    } else {
+      res
+        .status(201)
+        .json({ success: true, message: "Signed up successfully" });
+    }
   } catch (error) {
     console.error("Error creating admin:", error);
     res.status(500).json({
@@ -378,13 +384,70 @@ const getAllAdmin = async (req, res) => {
       .send({ success: false, message: "internal server Error" + error });
   }
 };
+const updateAdmin = async (req, res) => {
+  try {
+    const existingUser = await adminModel
+      .findById(req.params.id)
+      .select("+password");
+    if (!existingUser) {
+      return res.status(400).json({ message: "User not found" });
+    }
+
+    const {
+      name,
+      email,
+      companyname,
+      companyid,
+      contact,
+      role,
+      password,
+      verify,
+    } = req.body;
+
+    const salt = await bcrypt.genSalt(10);
+
+    existingUser.name = name !== undefined ? name : existingUser.name;
+    existingUser.email = email !== undefined ? email : existingUser.email;
+    existingUser.companyname =
+      companyname !== undefined ? companyname : existingUser.companyname;
+    existingUser.companyid =
+      companyid !== undefined ? companyid : existingUser.companyid;
+    existingUser.contact =
+      contact !== undefined ? contact : existingUser.contact;
+
+    // Check if password is provided and update it
+    if (password !== undefined) {
+      existingUser.password = await bcrypt.hash(password, salt);
+    }
+
+    existingUser.verify = verify !== undefined ? verify : existingUser.verify;
+
+    const updatedUser = await existingUser.save();
+
+    res.status(200).json({ admin: updatedUser });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+const deleteadmin = async (req, res) => {
+  try {
+    const deleteUser = await adminModel.findByIdAndDelete(req.params.id);
+    res
+      .status(200)
+      .json({ user: deleteUser, message: "User deleted successfully...." });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 export {
   creationrole,
   getalldata,
   createadmin,
   adminlogin,
+  deleteadmin,
   getdata_NC,
   getAllAdmin,
+  updateAdmin,
   getdata_C,
   updateconfirmed,
   superAdminLogin,

@@ -80,10 +80,42 @@ const deleteadminnotification = async (req, res) => {
     });
   }
 };
+const deletesuperadminnotification = async (req, res) => {
+  try {
+    if (req.params.id) {
+      const notificationToDelete =
+        await superAdminNotification.findByIdAndDelete(req.params.id);
+      const notifications = await superAdminNotification.find();
+      if (notificationToDelete) {
+        res.status(200).send({
+          success: true,
+          notificationToDelete,
+          notifications,
+        });
+      } else {
+        res.status(404).send({
+          success: false,
+          message: "Notification not found",
+        });
+      }
+    } else {
+      res.status(400).send({
+        success: false,
+        message: "ID is not available for deleting notification",
+      });
+    }
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Internal server error: " + error.message,
+    });
+  }
+};
 
 export {
   getAdminNotification,
   createadminnotification,
   getSuperAdminNotification,
   deleteadminnotification,
+  deletesuperadminnotification,
 };
