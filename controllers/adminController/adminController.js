@@ -233,7 +233,8 @@ const getdata_C = async (req, res) => {
 const updateconfirmed = async (req, res) => {
   try {
     const orderId = req.params.id;
-
+    const { serviceprice } = req.body;
+    console.log(serviceprice, typeof serviceprice);
     const order = await bookingmodel.findOneAndUpdate(
       {
         _id: orderId,
@@ -242,6 +243,7 @@ const updateconfirmed = async (req, res) => {
       {
         $set: {
           orderfinalstatus: "Confirmed",
+          serviceprice: serviceprice,
         },
       },
       { new: true }
@@ -393,16 +395,8 @@ const updateAdmin = async (req, res) => {
       return res.status(400).json({ message: "User not found" });
     }
 
-    const {
-      name,
-      email,
-      companyname,
-      companyid,
-      contact,
-      role,
-      password,
-      verify,
-    } = req.body;
+    const { name, email, companyname, companyid, contact, password, verify } =
+      req.body;
 
     const salt = await bcrypt.genSalt(10);
 
@@ -416,7 +410,7 @@ const updateAdmin = async (req, res) => {
       contact !== undefined ? contact : existingUser.contact;
 
     // Check if password is provided and update it
-    if (password !== undefined) {
+    if (password !== undefined && password.length !== 0) {
       existingUser.password = await bcrypt.hash(password, salt);
     }
 
