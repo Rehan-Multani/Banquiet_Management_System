@@ -233,7 +233,6 @@ const getdata_C = async (req, res) => {
 const updateconfirmed = async (req, res) => {
   try {
     const orderId = req.params.id;
-    const { serviceprice, sgst, cgst, igst } = req.body;
     console.log(serviceprice, typeof serviceprice);
     const order = await bookingmodel.findOneAndUpdate(
       {
@@ -243,10 +242,6 @@ const updateconfirmed = async (req, res) => {
       {
         $set: {
           orderfinalstatus: "Confirmed",
-          serviceprice: serviceprice,
-          sgst,
-          cgst,
-          igst,
         },
       },
       { new: true }

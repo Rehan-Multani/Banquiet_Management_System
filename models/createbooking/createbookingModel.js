@@ -36,9 +36,7 @@ const bookingSchema = new mongoose.Schema({
   companyid: {
     type: String,
   },
-  sgst: { type: String },
-  cgst: { type: String },
-  igst: { type: String },
+
   totalPrice: { type: Number },
 });
 
