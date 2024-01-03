@@ -38,6 +38,8 @@ const bookingSchema = new mongoose.Schema({
   },
   sgst: { type: String },
   cgst: { type: String },
+  igst: { type: String },
+  totalPrice: { type: Number },
 });
 
 const bookingModel = mongoose.model("booking", bookingSchema);

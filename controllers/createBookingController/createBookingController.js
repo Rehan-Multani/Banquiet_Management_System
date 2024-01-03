@@ -167,6 +167,9 @@ const createbooking = async (req, res) => {
       companyid = admin.companyid;
     }
     // Convert chef and waiter to arrays if they are not already
+    const totalPrice = finalItems.reduce((acc, cur) => {
+      return acc + parseInt(cur.price) * parseInt(cur.quantity);
+    }, 0);
     const newBooking = new bookingModel({
       customername,
       mobilenumber,
@@ -187,6 +190,7 @@ const createbooking = async (req, res) => {
       chef: finalChef,
       waiter: finalWaiter,
       customerid: finalCusId,
+      totalPrice,
       userbookingid: req.user.id,
     });
 
@@ -290,6 +294,9 @@ const updateBooking = async (req, res) => {
       message: "Please provide valid details for all fields",
     });
   }
+  const totalPrice = finalItems.reduce((acc, cur) => {
+    return parseInt(cur.price) * parseInt(cur.quantity) + acc;
+  }, 0);
   try {
     const updatedBooking = await bookingModel.findByIdAndUpdate(
       id,
@@ -311,6 +318,7 @@ const updateBooking = async (req, res) => {
         items: finalItems,
         chef: finalChef,
         waiter: finalWaiter,
+        totalPrice,
       },
       { new: true }
     );
