@@ -12,8 +12,9 @@ import notification from "./routes/notification/notificationRoute.js";
 import taskRouter from "./routes/taskRoute.js";
 import forgotPasswordRouter from "./routes/forgotPassword.js";
 import bookingRouter from "./routes/createBookingRouter/createBookingRouter.js";
-import customerRouter from "./routes/customerRouter/customerRouter.js";
 import adminnotification from "./routes/adminnotificationRouter/adminnotificationRouter.js";
+import customerRouter from "./routes/customerRouter/customerRouter.js";
+import companyRouter from "./routes/companyRoute.js";
 
 //app config
 dotenv.config();
@@ -65,6 +66,7 @@ app.use("/api/admin/notification", adminnotification);
 
 // notification route
 app.use("/api/notification", notification);
+app.use("/api/company", companyRouter);
 
 //listen
 app.listen(port, () => console.log(`Listening on localhost:${port}`));
