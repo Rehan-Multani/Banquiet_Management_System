@@ -87,6 +87,7 @@ const createbooking = async (req, res) => {
       orderfinalstatus,
       items,
       chef,
+      addGST,
       waiter,
     } = req.body;
     console.log(chef, servicedescription, servicename, waiter, items);
@@ -190,7 +191,9 @@ const createbooking = async (req, res) => {
       chef: finalChef,
       waiter: finalWaiter,
       customerid: finalCusId,
+      addGST,
       totalPrice,
+      remainingPayment: totalPrice,
       userbookingid: req.user.id,
     });
 
@@ -256,6 +259,7 @@ const updateBooking = async (req, res) => {
     orderfinalstatus,
     items,
     chef,
+    addGST,
     waiter,
   } = req.body;
   // Validate fields
@@ -268,10 +272,7 @@ const updateBooking = async (req, res) => {
     timeend,
     numberofguest,
     eventtypes,
-    message,
     servicename,
-    servicedescription,
-    serviceprice,
     orderfinalstatus,
   ];
   const finalItems = JSON.parse(items);
@@ -305,6 +306,7 @@ const updateBooking = async (req, res) => {
         mobilenumber,
         email,
         bookingfrom,
+        addGST,
         timestart,
         bookingto,
         timeend,
@@ -322,19 +324,17 @@ const updateBooking = async (req, res) => {
       },
       { new: true }
     );
-    const { email: orderManagerEmail } = await userModel
-      .findById(req.user.id)
-      .select("email");
-    sendMail(email, orderManagerEmail, "updated", updatedBooking);
+    const user = await userModel.findById(req.user.id).select("email");
+    sendMail(email, user?.email, "updated", updatedBooking);
 
     let adminnotification = await adminNotification.create({
       creatorId: req.user.id,
-      message: message,
-      type: req?.body?.type,
+      message: "Order Updated",
+      type: "information",
     });
-    const admindata = await userModel.findOne({ id: req.user.id });
+    const admindata = await adminModel.findOne({ id: req.user.id });
     console.log(admindata);
-    let usernotification = admindata.notifications.push(req.body.message[0]);
+    admindata.notifications.push(req.body.message[0]);
     await admindata.save();
 
     res.status(200).json({
@@ -348,7 +348,18 @@ const updateBooking = async (req, res) => {
     res.status(502).json({ message: error.message });
   }
 };
-
+const updateReceivedPayment = async (req, res) => {
+  const { id } = req.params;
+  const { remainingPayment } = req.body;
+  const booking = await bookingModel.findByIdAndUpdate(
+    id,
+    {
+      remainingPayment,
+    },
+    { new: true }
+  );
+  res.status(200).json({ booking, message: "Update successful" });
+};
 const getBooking = async (req, res) => {
   try {
     // sendMail();
@@ -424,4 +435,5 @@ export {
   deleteBooking,
   getsingleBooking,
   getBookingByPage,
+  updateReceivedPayment,
 };

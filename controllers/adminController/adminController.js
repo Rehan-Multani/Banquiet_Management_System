@@ -7,6 +7,7 @@ import validator from "validator";
 import adminNotification from "../../models/adminnotificationModel/adminnotificationModel.js";
 import superAdminNotification from "../../models/superAdminNotiModel.js";
 import adminModel from "../../models/adminModel/adminModel.js";
+import companyModel from "../../models/companyModel.js";
 
 const createToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -60,6 +61,14 @@ const createadmin = async (req, res) => {
       verify,
     });
     const admin = await newAdmin.save();
+
+    const company = new companyModel({
+      companyId: companyid,
+      name: companyname,
+      adminId: admin._id,
+      email,
+    });
+    await company.save();
     if (!verify) {
       await superAdminNotification.create({
         creatorId: admin._id,
@@ -233,7 +242,6 @@ const getdata_C = async (req, res) => {
 const updateconfirmed = async (req, res) => {
   try {
     const orderId = req.params.id;
-    console.log(serviceprice, typeof serviceprice);
     const order = await bookingmodel.findOneAndUpdate(
       {
         _id: orderId,
@@ -413,6 +421,15 @@ const updateAdmin = async (req, res) => {
     }
 
     existingUser.verify = verify !== undefined ? verify : existingUser.verify;
+    const company = companyModel.findOneAndUpdate(
+      { companyId: companyid },
+      {
+        name: companyname,
+        adminId: admin._id,
+        email,
+      }
+    );
+    await company.save();
 
     const updatedUser = await existingUser.save();
 

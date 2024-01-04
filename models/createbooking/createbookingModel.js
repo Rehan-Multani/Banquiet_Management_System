@@ -36,8 +36,10 @@ const bookingSchema = new mongoose.Schema({
   companyid: {
     type: String,
   },
+  remainingPayment: { type: Number },
 
   totalPrice: { type: Number },
+  addGST: { type: Boolean },
 });
 
 const bookingModel = mongoose.model("booking", bookingSchema);
