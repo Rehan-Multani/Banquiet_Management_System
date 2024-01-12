@@ -1,20 +1,17 @@
-import menuModel from "../models/MenuModel.js";
+import menuModel from "../models/TicketModel.js";
 const updateKitchen = async (req, res) => {
   const { id } = req.params;
-  const { items } = req.body;
+  const { items, comment } = req.body;
 
   try {
     const updatedMenuPromises = items.map(async (item) => {
-    
       if (item._id) {
-       
         const existingItem = await menuModel.findOne({
           _id: id,
           "items._id": item._id,
         });
-
         if (!existingItem) {
-          return null; 
+          return null;
         }
 
         const updatedFields = {
@@ -27,13 +24,13 @@ const updateKitchen = async (req, res) => {
 
         const updatedMenu = await menuModel.findOneAndUpdate(
           { _id: id, "items._id": item._id },
-          { $set: updatedFields },
+          { $set: updatedFields, comment },
           { new: true }
         );
 
         return updatedMenu;
       } else {
-        return null; 
+        return null;
       }
     });
 

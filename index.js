@@ -15,7 +15,8 @@ import bookingRouter from "./routes/createBookingRouter/createBookingRouter.js";
 import adminnotification from "./routes/adminnotificationRouter/adminnotificationRouter.js";
 import customerRouter from "./routes/customerRouter/customerRouter.js";
 import companyRouter from "./routes/companyRoute.js";
-import menuRoute from "./routes/MenuRoute.js";
+import Ticket from "./routes/TicketRoute.js";
+import menu from "./routes/MenuRouter.js";
 import kitchen from "./routes/KitchenRouter.js";
 
 //app config
@@ -73,7 +74,8 @@ app.use("/api/company", companyRouter);
 app.use("/api/admin", admin);
 
 // menu
-app.use("/api/menu", menuRoute);
+app.use("/api/ticket", Ticket);
+app.use("/api/menu", menu);
 app.use("/api/menu/kitchen", kitchen);
 
 //listen

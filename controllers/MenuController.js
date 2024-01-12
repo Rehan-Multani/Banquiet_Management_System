@@ -37,15 +37,20 @@ const updateMenu = async (req, res) => {
   }
 };
 
-const getmenu = async (req, res) => {
+const getMenu = async (req, res) => {
   console.log(req.user);
   console.log(req.admin);
-  const menu = await menuModel.findOne({ adminid: req.admin.id });
-  res.status(200).json({ menu });
-};
-const deletedata = async (req, res) => {
-  const menu = await menuModel.findOne({ _id: req.params.id });
-  res.status(200).json({ menu });
+  const Menu = await menuModel.findOne({ adminid: req.admin.id });
+  res.status(200).json({ Menu });
 };
 
-export { updateMenu, getmenu, deletedata, createMenu };
+const getMenuall = async (req, res) => {
+  const Menu = await menuModel.find();
+  res.status(200).json({ Menu });
+};
+const deleteMenu = async (req, res) => {
+  const Menu = await menuModel.findOne({ _id: req.params.id });
+  res.status(200).json({ Menu });
+};
+
+export { updateMenu, getMenu, deleteMenu, createMenu, getMenuall };

@@ -7,19 +7,9 @@ const MenuSchema = new mongoose.Schema({
   },
   date_from: String,
   date_to: String,
-  items: [
-    {
-      name: { type: String },
-      quantity: { type: String },
-      weight: { type: String },
-      rating: { type: String },
-      remaining_quantity: { type: String },
-      kitchenid: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-      securityid: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-      last_update_security: { type: String },
-      last_update_kitchen: { type: String },
-    },
-  ],
+  kitchenid: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  securityid: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  items: [{ type: String }],
   comment: { type: String },
 });
 

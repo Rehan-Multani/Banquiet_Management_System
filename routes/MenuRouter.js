@@ -1,17 +1,19 @@
 import express from "express";
 import {
   updateMenu,
-  getmenu,
-  deletedata,
+  getMenu,
+  deleteMenu,
   createMenu,
+  getMenuall,
 } from "../controllers/MenuController.js";
 import requireAuth from "../middleware/requireAuth.js";
 const router = express.Router();
 
 router.post("/create-menu", requireAuth, createMenu);
-router.get("/", requireAuth, getmenu);
+router.get("/", requireAuth, getMenuall);
+router.get("/singlemenu", requireAuth, getMenu);
 
 router.put("/:id", requireAuth, updateMenu);
-router.delete("/:id", requireAuth, deletedata);
+router.delete("/:id", requireAuth, deleteMenu);
 
 export default router;
