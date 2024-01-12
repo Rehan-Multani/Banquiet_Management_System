@@ -16,6 +16,7 @@ import adminnotification from "./routes/adminnotificationRouter/adminnotificatio
 import customerRouter from "./routes/customerRouter/customerRouter.js";
 import companyRouter from "./routes/companyRoute.js";
 import menuRoute from "./routes/MenuRoute.js";
+import kitchen from "./routes/KitchenRouter.js";
 
 //app config
 dotenv.config();
@@ -73,6 +74,7 @@ app.use("/api/admin", admin);
 
 // menu
 app.use("/api/menu", menuRoute);
+app.use("/api/menu/kitchen", kitchen);
 
 //listen
 const server = app.listen(port, () =>
