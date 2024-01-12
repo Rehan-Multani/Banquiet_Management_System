@@ -36,4 +36,3 @@ const updateKitchen = async (req, res) => {
 
 export { updateKitchen };
 
-export { updateKitchen };
