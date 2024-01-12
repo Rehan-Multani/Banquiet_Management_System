@@ -21,8 +21,8 @@ const updateMenu = async (req, res) => {
 
   try {
     const updatedMenu = await menuModel.findByIdAndUpdate(
-      { _id: id, "items._id": req.body.id },
-      { $set: { items } },
+      { _id: id },
+      { $set: { items: JSON.parse(items) } },
       { new: true }
     );
 
