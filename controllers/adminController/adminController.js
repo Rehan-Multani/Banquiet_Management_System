@@ -14,7 +14,7 @@ const createToken = (id) => {
     expiresIn: "1yr",
   });
 };
-
+ 
 const createadmin = async (req, res) => {
   try {
     const {

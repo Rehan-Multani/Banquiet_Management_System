@@ -15,6 +15,7 @@ import bookingRouter from "./routes/createBookingRouter/createBookingRouter.js";
 import adminnotification from "./routes/adminnotificationRouter/adminnotificationRouter.js";
 import customerRouter from "./routes/customerRouter/customerRouter.js";
 import companyRouter from "./routes/companyRoute.js";
+import menuRoute from "./routes/MenuRoute.js";
 
 //app config
 dotenv.config();
@@ -68,9 +69,13 @@ app.use("/api/admin/notification", adminnotification);
 app.use("/api/notification", notification);
 app.use("/api/company", companyRouter);
 
-app.use("/api/admin",admin );
+app.use("/api/admin", admin);
+
+// menu
+app.use("/api/menu", menuRoute);
+
 //listen
 const server = app.listen(port, () =>
-console.log(`Listening on localhost:${port}`)
+  console.log(`Listening on localhost:${port}`)
 );
 server.setTimeout(500000);
