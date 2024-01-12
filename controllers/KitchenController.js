@@ -5,20 +5,38 @@ const updateKitchen = async (req, res) => {
 
   try {
     const updatedMenuPromises = items.map(async (item) => {
-      const updatedMenu = await menuModel.findOneAndUpdate(
-        { _id: id, "items._id": item._id },
-        {
-          $set: {
-            "items.$.weight": item.weight,
-            "items.$.kitchenid": item.kitchenid,
-            "items.$.rating": item.rating || null,
-            "items.$.last_update_kitchen": new Date().toString(),
-          },
-        },
-        { new: true }
-      );
+      // Check if the item is available in req.body
+      if (item._id) {
+        // Fetch the existing item without updating to retain the old data
+        const existingItem = await menuModel.findOne({
+          _id: id,
+          "items._id": item._id,
+        });
 
-      return updatedMenu;
+        if (!existingItem) {
+          return null; // If item not found, return null
+        }
+
+        // Update only the fields that are present in req.body
+        const updatedFields = {
+          "items.$.rating": item.rating || existingItem.items[0].rating,
+          "items.$.quantity": item.quantity || existingItem.items[0].quantity,
+          "items.$.weight": item.weight || existingItem.items[0].weight,
+          "items.$.kitchenid":
+            item.kitchenid || existingItem.items[0].kitchenid,
+          "items.$.last_update_kitchen": new Date().toString(),
+        };
+
+        const updatedMenu = await menuModel.findOneAndUpdate(
+          { _id: id, "items._id": item._id },
+          { $set: updatedFields },
+          { new: true }
+        );
+
+        return updatedMenu;
+      } else {
+        return null; // If item._id is not present, return null
+      }
     });
 
     const updatedMenus = await Promise.all(updatedMenuPromises);
@@ -35,4 +53,3 @@ const updateKitchen = async (req, res) => {
 };
 
 export { updateKitchen };
-

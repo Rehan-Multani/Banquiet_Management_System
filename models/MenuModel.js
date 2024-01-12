@@ -20,6 +20,7 @@ const MenuSchema = new mongoose.Schema({
       last_update_kitchen: { type: String },
     },
   ],
+  comment: { type: String },
 });
 
 const menuModel = mongoose.model("menu", MenuSchema);
