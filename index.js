@@ -68,8 +68,9 @@ app.use("/api/admin/notification", adminnotification);
 app.use("/api/notification", notification);
 app.use("/api/company", companyRouter);
 
+app.use("/api/admin",admin );
 //listen
 const server = app.listen(port, () =>
-  console.log(`Listening on localhost:${port}`)
+console.log(`Listening on localhost:${port}`)
 );
 server.setTimeout(500000);

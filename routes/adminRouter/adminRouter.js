@@ -15,6 +15,8 @@ import {
   verifyadmin,
   updateAdmin,
   deleteadmin,
+  createadminV2,
+  updateAdminV2,
 } from "../../controllers/adminController/adminController.js";
 import requireAuth from "../../middleware/requireAuth.js";
 import userModel from "../../models/userModel.js";
@@ -62,4 +64,6 @@ router.post("/adduser", requireAuth, adduser);
 router.put("/updateuser/:id", requireAuth, updateuser);
 router.delete("/deleteuser/:id", requireAuth, deleteuser);
 
+router.post("/v2/createadmin", createadminV2);
+router.put("/v2/update/:id", requireAuth, updateAdminV2);
 export default router;

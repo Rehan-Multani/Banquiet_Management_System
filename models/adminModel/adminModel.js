@@ -8,6 +8,9 @@ const adminSchema = new mongoose.Schema({
   companyname: String,
   companyid: String,
   contact: String,
+  date_from: String,
+  date_to: String,
+  menu: Array,
   verify: { type: Boolean, default: false },
   resetToken: { type: String, required: false },
 });
