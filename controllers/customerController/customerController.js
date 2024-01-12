@@ -1,16 +1,13 @@
 import validator from "validator";
 
 import Cdata from "../../models/customerModel/customerModel.js";
+import userModel from "../../models/userModel.js";
+import adminModel from "../../models/adminModel/adminModel.js";
 
 //register user
 const addcustomer = async (req, res) => {
   try {
-    const {
-      name,
-      email,
-      address,
-      mobile,
-    } = req.body;
+    const { name, email, address, mobile } = req.body;
 
     // Check if user already exists
     const exists = await Cdata.findOne({ email: email });
@@ -35,16 +32,34 @@ const addcustomer = async (req, res) => {
         message: "Please provide valid details for all fields",
       });
     }
-    // Create a new customer entry
-    const newCustomer = new Cdata({
-      name,
-      email,
-      address,
-      mobile,
-      userid: req.user.id,
-    });
 
-    const customer = await newCustomer.save();
+    const isAdmin = await adminModel.findById(req.user.id);
+    let customer;
+    if (isAdmin) {
+      const newCustomer = new Cdata({
+        name,
+        email,
+        address,
+        mobile,
+        companyname: isAdmin.companyname,
+      });
+
+      customer = await newCustomer.save();
+    } else {
+      const user = await userModel.findById(req.user.id);
+      const newCustomer = new Cdata({
+        name,
+        email,
+        address,
+        mobile,
+        companyname: user.companyname,
+      });
+
+      customer = await newCustomer.save();
+    }
+
+    // Create a new customer entry
+
     res.status(200).json({
       success: true,
       message: "Customer added successfully",
@@ -55,14 +70,14 @@ const addcustomer = async (req, res) => {
   }
 };
 
-
 //get user info
 const getsinglecustomer = async (req, res) => {
   try {
-    const user = await Cdata
-      .findOne({ _id: req.params.id })
+    const user = await Cdata.findOne({ _id: req.params.id });
     //   .populate("userbookingid");
-    res.status(200).json({ success: true, message: "getviewone customer", user });
+    res
+      .status(200)
+      .json({ success: true, message: "getviewone customer", user });
   } catch (error) {
     res.status(502).json({ success: false, message: error.message });
   }
@@ -90,7 +105,14 @@ const updatecustomer = async (req, res) => {
 
 const getcustomer = async (req, res) => {
   try {
-    const user = await Cdata.find({})
+    const isAdmin = await adminModel.findById(req.user.id);
+    let user;
+    if (isAdmin) {
+      user = await Cdata.find({ companyname: isAdmin.companyname });
+    } else {
+      const userOne = await userModel.findById(req.user.id);
+      user = await Cdata.find({ companyname: userOne.companyname });
+    }
     // .populate("userbookingid");
     console.log("user", user);
     res.status(200).json({
@@ -119,5 +141,5 @@ export {
   getsinglecustomer,
   getcustomer,
   deletecustomer,
-  updatecustomer
+  updatecustomer,
 };

@@ -88,6 +88,7 @@ const registerUser = async (req, res) => {
       creatorId: user._id,
       message: `Please verify ${user.name}`,
       type: "verify",
+      companyname,
     });
 
     res.status(200).json({ user });
@@ -173,8 +174,10 @@ const deletenotifications = async (req, res) => {
 };
 
 export const getAllUsers = async (req, res) => {
+  const admin = await adminModel.findById(req.user.id);
+  console.log(admin.companyname);
   try {
-    const user = await userModel.find();
+    const user = await userModel.find({ companyname: admin.companyname });
     res.status(200).json({ user });
   } catch (error) {
     res.status(502).json({ message: error.message });

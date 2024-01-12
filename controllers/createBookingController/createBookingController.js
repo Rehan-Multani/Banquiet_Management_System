@@ -141,6 +141,15 @@ const createbooking = async (req, res) => {
       });
     }
 
+    let companyname;
+    const data = await userModel.findById(req.user.id);
+    if (data) {
+      companyname = data.companyname;
+    } else {
+      const admin = await adminModel.findById(req.user.id);
+      companyname = admin.companyname;
+    }
+
     let finalCusId;
     const curCustomer = await customerModel.findOne({ email });
     console.log(curCustomer, "curCustomer");
@@ -150,6 +159,7 @@ const createbooking = async (req, res) => {
         name: customername,
         address: "India",
         mobile: mobilenumber,
+        companyname,
         totalOrders: 1,
       });
       const customer = await newCustomer.save();
@@ -159,14 +169,7 @@ const createbooking = async (req, res) => {
       await curCustomer.save();
       finalCusId = curCustomer._id;
     }
-    let companyid;
-    const data = await userModel.findById(req.user.id);
-    if (data) {
-      companyid = data.companyid;
-    } else {
-      const admin = await adminModel.findById(req.user.id);
-      companyid = admin.companyid;
-    }
+
     // Convert chef and waiter to arrays if they are not already
     const totalPrice = finalItems.reduce((acc, cur) => {
       return acc + parseInt(cur.price) * parseInt(cur.quantity);
@@ -186,7 +189,7 @@ const createbooking = async (req, res) => {
       servicedescription,
       serviceprice,
       orderfinalstatus,
-      companyid,
+      companyname,
       items: finalItems,
       chef: finalChef,
       waiter: finalWaiter,
@@ -214,6 +217,7 @@ const createbooking = async (req, res) => {
       creatorId: req.user.id,
       message: `Order created for ${customername} by ${admindata.name}`,
       type: "information",
+      companyname,
     });
 
     res.status(200).json({
@@ -331,6 +335,7 @@ const updateBooking = async (req, res) => {
       creatorId: req.user.id,
       message: "Order Updated",
       type: "information",
+      companyname,
     });
     const admindata = await adminModel.findOne({ id: req.user.id });
     console.log(admindata);
@@ -367,7 +372,7 @@ const getBooking = async (req, res) => {
     let bookings;
     if (isAdmin) {
       bookings = await bookingModel
-        .find({ companyid: isAdmin.companyid })
+        .find({ companyname: isAdmin.companyname })
         .populate("customerid");
     } else {
       bookings = await bookingModel

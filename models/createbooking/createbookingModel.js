@@ -33,7 +33,7 @@ const bookingSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "customer",
   },
-  companyid: {
+  companyname: {
     type: String,
   },
   remainingPayment: { type: Number },

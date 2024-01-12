@@ -5,7 +5,11 @@ import userModel from "../../models/userModel.js";
 
 const getAdminNotification = async (req, res) => {
   try {
-    const notifications = await adminNotification.find();
+    const admin = await adminModel.findById(req.user.id);
+    console.log(admin, "adminnnn");
+    const notifications = await adminNotification.find({
+      companyname: admin.companyname,
+    });
     res.status(200).send({
       success: true,
       notifications,

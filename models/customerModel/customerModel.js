@@ -5,6 +5,7 @@ const customerSchema = new mongoose.Schema({
   email: { type: String },
   address: { type: String },
   mobile: { type: Number },
+  companyname: String,
   customerbookingid: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "booking",
