@@ -44,4 +44,15 @@ const deleteTicket = async (req, res) => {
   res.status(200).json({ Ticket });
 };
 
-export { getTicket, deleteTicket, createTicket, getTicketall };
+const getfilterdata = async (req, res) => {
+  const { date } = req.params;
+  const menu = await TicketModel.find();
+  console.log(menu);
+  const finalMenu = menu.filter((item) => {
+    return item.kitchenid !== null && item?.securityid !== null;
+  });
+  console.log(finalMenu);
+  res.status(200).json({ data: { finalMenu } });
+};
+
+export { getTicket, deleteTicket, createTicket, getTicketall, getfilterdata };
