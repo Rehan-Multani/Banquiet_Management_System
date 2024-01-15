@@ -18,7 +18,8 @@ const updateKitchen = async (req, res) => {
           "items.$.rating": item.rating || existingItem.items[0].rating,
           "items.$.quantity": item.quantity || existingItem.items[0].quantity,
           "items.$.weight": item.weight || existingItem.items[0].weight,
-          "items.$.kitchenid": item.kitchenid || existingItem.items[0].kitchenid,
+          "items.$.kitchenid":
+            item.kitchenid || existingItem.items[0].kitchenid,
           "items.$.last_update_kitchen": new Date().toString(),
         };
 
@@ -47,4 +48,15 @@ const updateKitchen = async (req, res) => {
   }
 };
 
-export { updateKitchen };
+const getfilterdata = async (req, res) => {
+  const data = await menuModel.find();
+
+  const finaldata = data.filter((item) => {
+    return item.securityid == null && item.securityid == undefined;
+  });
+
+  console.log(finaldata);
+  res.status(200).json({ data: { finaldata } });
+};
+
+export { updateKitchen, getfilterdata };

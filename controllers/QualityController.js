@@ -11,7 +11,11 @@ const add = async (req, res) => {
       let updatequality = await unityModel.findByIdAndUpdate(
         id,
         {
-          $set: { qualitymanagerid: adminid, items: req.body.items },
+          $set: {
+            qualitymanagerid: adminid,
+            items: req.body.items,
+            comment: req.body.comment,
+          },
         },
         { new: true }
       );

@@ -4,7 +4,7 @@ import userModel from "../models/userModel.js";
 
 const add = async (req, res) => {
   const { id: adminid } = req.admin;
-  
+
   const { ticketid, items } = req.body;
   try {
     const roledata = await userModel.findOne({ _id: adminid });
@@ -29,4 +29,19 @@ const add = async (req, res) => {
   }
 };
 
-export { add };
+const getfilterdata = async (req, res) => {
+
+  const data = await unityModel.find();
+ 
+  const finaldata = data.filter((item) => {
+    return (
+      item.qualitymanagerid == null &&
+      item.qualitymanagerid == undefined 
+    );
+  });
+
+  console.log(finaldata);
+  res.status(200).json({ data: { finaldata } });
+};
+
+export { add, getfilterdata };

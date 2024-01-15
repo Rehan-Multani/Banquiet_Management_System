@@ -12,6 +12,7 @@ const unitySchema = new mongoose.Schema({
       remaining_quantity: { type: String },
     },
   ],
+  comment: { type: String },
 });
 
 const unityModel = mongoose.model("unity", unitySchema);
