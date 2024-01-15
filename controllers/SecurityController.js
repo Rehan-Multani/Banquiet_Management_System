@@ -3,12 +3,13 @@ import userModel from "../models/userModel.js";
 
 const add = async (req, res) => {
   const { id: adminid } = req.admin;
+  const { id } = req.params;
   try {
     const rolekitchen = await userModel.findOne({ _id: adminid });
     console.log(rolekitchen);
     if (rolekitchen.role == "Security") {
       let updateweight = await TicketModel.findByIdAndUpdate(
-        req.body.id,
+        id,
         {
           $set: { weight: req.body.weight },
         },
