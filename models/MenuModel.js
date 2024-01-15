@@ -7,7 +7,7 @@ const MenuSchema = new mongoose.Schema({
   },
   date_from: String,
   date_to: String,
-  items: [{ type: String }],
+  items: [],
 });
 
 const menuModel = mongoose.model("menu", MenuSchema);

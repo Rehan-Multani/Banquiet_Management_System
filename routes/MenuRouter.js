@@ -10,7 +10,7 @@ import requireAuth from "../middleware/requireAuth.js";
 const router = express.Router();
 
 router.post("/create-menu", requireAuth, createMenu);
-router.get("/", requireAuth, getMenuall);
+router.get("/:date", requireAuth, getMenuall);
 router.get("/singlemenu", requireAuth, getMenu);
 
 router.put("/:id", requireAuth, updateMenu);

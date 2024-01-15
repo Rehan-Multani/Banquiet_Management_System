@@ -58,7 +58,9 @@ const deleteadminnotification = async (req, res) => {
       const notificationToDelete = await adminNotification.findByIdAndDelete(
         req.params.id
       );
-      const notifications = await adminNotification.find();
+      const notifications = await adminNotification.find({
+        companyname: admin.companyname,
+      });
       if (notificationToDelete) {
         res.status(200).send({
           success: true,

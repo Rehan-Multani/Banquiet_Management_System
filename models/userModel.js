@@ -9,7 +9,17 @@ const userSchema = new mongoose.Schema({
   role: {
     type: String,
     default: "Order Management",
-    enum: ["Order Management", "Waiter", "Chef", "admin", "superadmin"],
+    enum: [
+      "Order Management",
+      "Waiter",
+      "Chef",
+      "admin",
+      "superadmin",
+      "Kitchen",
+      "Quality Checker",
+      "Unit Manager",
+      "Security",
+    ],
   },
   verify: { type: Boolean, default: false },
   password: { type: String, required: true, select: true },
