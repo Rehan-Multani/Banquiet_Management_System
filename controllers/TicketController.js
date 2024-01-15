@@ -1,36 +1,26 @@
 import TicketModel from "../models/TicketModel.js";
+import userModel from "../models/userModel.js";
 
 const createTicket = async (req, res) => {
   const { id: adminid } = req.admin;
   const { items } = req.body;
 
   try {
-    const newTicket = new TicketModel({ adminid, items });
-    const savedTicket = await newTicket.save();
+    const rolekitchen = await userModel.findOne({ _id: adminid });
 
-    res.status(201).json(savedTicket);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-};
-
-const updateTicket = async (req, res) => {
-  const { id } = req.params;
-  const { items } = req.body;
-
-  try {
-    const updatedTicket = await TicketModel.findByIdAndUpdate(
-      { _id: id, "items._id": req.body.id },
-      { $set: { items } },
-      { new: true }
-    );
-
-    if (!updatedTicket) {
-      return res.status(404).json({ message: "Ticket not found" });
+    if (rolekitchen.role == "Kitchen") {
+      const newTicket = new TicketModel({
+        adminid,
+        kitchenid: rolekitchen._id,
+        items,
+      });
+      const savedTicket = await newTicket.save();
+      res.status(201).json({ success: true, savedTicket });
+    } else {
+      res
+        .status(201)
+        .json({ success: false, message: "you are role is not authorised" });
     }
-
-    res.json(updatedTicket);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal Server Error" });
@@ -53,4 +43,4 @@ const deleteTicket = async (req, res) => {
   res.status(200).json({ Ticket });
 };
 
-export { updateTicket, getTicket, deleteTicket, createTicket, getTicketall };
+export { getTicket, deleteTicket, createTicket, getTicketall };

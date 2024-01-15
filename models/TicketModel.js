@@ -11,13 +11,13 @@ const TicketSchema = new mongoose.Schema({
     {
       name: { type: String },
       quantity: { type: String },
-      weight: { type: String },
       rating: { type: String },
       remaining_quantity: { type: String },
       last_update_security: { type: String },
       last_update_kitchen: { type: String },
     },
   ],
+  weight: { type: String },
   comment: { type: String },
 });
 

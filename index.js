@@ -18,6 +18,7 @@ import companyRouter from "./routes/companyRoute.js";
 import Ticket from "./routes/TicketRoute.js";
 import menu from "./routes/MenuRouter.js";
 import kitchen from "./routes/KitchenRouter.js";
+import Security from "./routes/SecurityRouter.js";
 
 //app config
 dotenv.config();
@@ -77,6 +78,7 @@ app.use("/api/admin", admin);
 app.use("/api/ticket", Ticket);
 app.use("/api/menu", menu);
 app.use("/api/menu/kitchen", kitchen);
+app.use("/api/security", Security);
 
 //listen
 const server = app.listen(port, () =>
