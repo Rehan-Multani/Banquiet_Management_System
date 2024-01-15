@@ -11,7 +11,7 @@ const add = async (req, res) => {
       let updateweight = await TicketModel.findByIdAndUpdate(
         id,
         {
-          $set: { weight: req.body.weight },
+          $set: { weight: req.body.weight, securityid: adminid },
         },
         { new: true }
       );
