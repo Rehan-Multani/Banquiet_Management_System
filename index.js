@@ -20,6 +20,7 @@ import menu from "./routes/MenuRouter.js";
 import kitchen from "./routes/KitchenRouter.js";
 import Security from "./routes/SecurityRouter.js";
 import Untiy from "./routes/UnityRouter.js";
+import Quality from "./routes/QualityRouter.js";
 
 //app config
 dotenv.config();
@@ -81,6 +82,7 @@ app.use("/api/menu", menu);
 app.use("/api/menu/kitchen", kitchen);
 app.use("/api/security", Security);
 app.use("/api/unity", Untiy);
+app.use("/api/quality", Quality);
 
 //listen
 const server = app.listen(port, () =>

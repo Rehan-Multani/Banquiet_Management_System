@@ -45,7 +45,6 @@ const deleteTicket = async (req, res) => {
 };
 
 const getfilterdata = async (req, res) => {
-  const { date } = req.params;
   const menu = await TicketModel.find();
   console.log(menu);
   const finalMenu = menu.filter((item) => {

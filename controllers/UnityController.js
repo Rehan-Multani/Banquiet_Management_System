@@ -4,6 +4,7 @@ import userModel from "../models/userModel.js";
 
 const add = async (req, res) => {
   const { id: adminid } = req.admin;
+  
   const { ticketid, items } = req.body;
   try {
     const roledata = await userModel.findOne({ _id: adminid });
