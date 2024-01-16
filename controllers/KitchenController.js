@@ -1,7 +1,7 @@
 import menuModel from "../models/TicketModel.js";
 const updateKitchen = async (req, res) => {
   const { id } = req.params;
-  const { items, comment } = req.body;
+  const { items } = req.body;
 
   try {
     const updatedMenuPromises = items.map(async (item) => {
