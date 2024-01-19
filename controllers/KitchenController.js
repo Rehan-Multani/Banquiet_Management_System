@@ -52,11 +52,11 @@ const getfilterdata = async (req, res) => {
   const data = await menuModel.find();
 
   const finaldata = data.filter((item) => {
-    return item.securityid == null && item.securityid == undefined;
+    return !item.securityid;
   });
 
   console.log(finaldata);
-  res.status(200).json({ data: { finaldata } });
+  res.status(201).json({ tickets: finaldata });
 };
 
 export { updateKitchen, getfilterdata };

@@ -79,7 +79,7 @@ app.use("/api/admin", admin);
 // menu
 app.use("/api/ticket", Ticket);
 app.use("/api/menu", menu);
-app.use("/api/menu/kitchen", kitchen);
+app.use("/api/kitchen", kitchen);
 app.use("/api/security", Security);
 app.use("/api/unity", Untiy);
 app.use("/api/quality", Quality);

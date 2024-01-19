@@ -40,7 +40,7 @@ const getfilterdata = async (req, res) => {
   });
 
   console.log(finalMenu);
-  res.status(200).json({ data: { finalMenu } });
+  res.status(201).json({ tickets: finalMenu });
 };
 
 export { add, getfilterdata };
