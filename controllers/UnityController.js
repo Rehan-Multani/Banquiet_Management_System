@@ -4,18 +4,14 @@ import userModel from "../models/userModel.js";
 
 const add = async (req, res) => {
   const { id: adminid } = req.admin;
-
-  const { ticketid, items } = req.body;
+  const { id } = req.params;
+  const { items } = req.body;
   try {
     const roledata = await userModel.findOne({ _id: adminid });
-    console.log(roledata);
     if (roledata.role == "Unit Manager") {
-      let ticketdata = await TicketModel.findOne({ _id: ticketid });
-
-      let data = await unityModel.create({
-        ticketid: ticketdata._id,
+      let data = await unityModel.findByIdAndUpdate(id, {
         unitid: roledata._id,
-        items: items,
+        items: JSON.parse(items),
       });
       res.status(201).json({ success: true, data });
     } else {

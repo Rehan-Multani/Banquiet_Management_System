@@ -9,7 +9,7 @@ const unitySchema = new mongoose.Schema({
       name: { type: String },
       quantity: { type: String },
       rating: { type: String },
-      remaining_quantity: { type: String },
+      remainingQuantity: { type: String },
     },
   ],
   comment: { type: String },

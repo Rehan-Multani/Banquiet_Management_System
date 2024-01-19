@@ -1,4 +1,5 @@
 import TicketModel from "../models/TicketModel.js";
+import unityModel from "../models/UnityModel.js";
 import userModel from "../models/userModel.js";
 
 const add = async (req, res) => {
@@ -15,6 +16,14 @@ const add = async (req, res) => {
         },
         { new: true }
       );
+      const unitItems = updateweight.items.map((el) => ({
+        ...el,
+        remainingQuantity: 0,
+      }));
+      await unityModel.create({
+        ticketid: updateweight._id,
+        items: unitItems,
+      });
       res.status(201).json({ success: true, updateweight });
     } else {
       res
@@ -29,14 +38,15 @@ const add = async (req, res) => {
 
 const getfilterdata = async (req, res) => {
   const { date } = req.params;
-  const menu = await TicketModel.find();
-  console.log(menu.securityid);
-  const finalMenu = menu.filter((item) => {
-    return (
-      item.kitchenid !== null &&
-      item.securityid !== undefined &&
-      item.securityid !== null
-    );
+  const menu = await unityModel.find();
+  // console.log(menu);
+  const finalMenu = menu.map((item) => {
+    return {
+      _id: item._id,
+      ticketid: item.ticketid,
+      items: item.items,
+      disabled: !item.qualitymanagerid,
+    };
   });
 
   console.log(finalMenu);

@@ -7,7 +7,7 @@ import {
 import requireAuth from "../middleware/requireAuth.js";
 const router = express.Router();
 
-router.post("/", requireAuth, add);
+router.post("/:id", requireAuth, add);
 router.get("/getfilterdata", requireAuth, getfilterdata);
 router.get("/remaininggt", requireAuth, remaininggt0);
 
