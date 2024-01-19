@@ -17,6 +17,15 @@ const TicketSchema = new mongoose.Schema({
       last_update_kitchen: { type: String },
     },
   ],
+  remaining_quantity: [
+    {
+      name: { type: String },
+      quantity: { type: String },
+      rating: { type: String },
+      remaining_quantity: { type: String },
+    },
+  ],
+  status: { type: String },
   weight: { type: String },
   comment: { type: String },
 });
