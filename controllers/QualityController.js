@@ -30,9 +30,16 @@ const add = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
+const getfilterdata = async (req, res) => {
+  const data = await unityModel.find();
 
+  const finaldata = data.filter((item) => item.qualitymanagerid !== undefined);
+
+  console.log("helloooo", finaldata.length);
+  res.status(201).json({ tickets: finaldata });
+};
 const getunitmanger = async (req, res) => {
   const data = await userModel.find({ role: "Unit Manager" });
   res.status(200).json({ data });
 };
-export { add, getunitmanger };
+export { add, getunitmanger, getfilterdata };

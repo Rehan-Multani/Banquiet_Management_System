@@ -3,7 +3,7 @@ import userModel from "../models/userModel.js";
 
 const createTicket = async (req, res) => {
   const { id: adminid } = req.admin;
-  const { items } = req.body;
+  const { items, comment } = req.body;
 
   try {
     const rolekitchen = await userModel.findOne({ _id: adminid });
@@ -13,6 +13,7 @@ const createTicket = async (req, res) => {
         adminid,
         kitchenid: rolekitchen._id,
         items: JSON.parse(items),
+        comment,
       });
       const savedTicket = await newTicket.save();
       res.status(201).json({ success: true, savedTicket });

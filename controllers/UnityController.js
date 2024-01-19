@@ -32,18 +32,16 @@ const add = async (req, res) => {
 const getfilterdata = async (req, res) => {
   const data = await unityModel.find();
 
-  const finaldata = data.filter((item) => {
-    return item.qualitymanagerid == null && item.qualitymanagerid == undefined;
-  });
+  const finaldata = data.filter((item) => !item.qualitymanagerid);
 
   console.log(finaldata);
-  res.status(200).json({ data: { finaldata } });
+  res.status(200).json({ tickets: finaldata });
 };
 
 const remaininggt0 = async (req, res) => {
   try {
     const data = await unityModel.find();
-  // remainingqunanty  > 0 logic
+    // remainingqunanty  > 0 logic
     res.status(200).json({ data });
   } catch (error) {
     console.error(error);
