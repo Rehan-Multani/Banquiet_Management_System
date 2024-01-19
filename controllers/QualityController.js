@@ -31,4 +31,8 @@ const add = async (req, res) => {
   }
 };
 
-export { add };
+const getunitmanger = async (req, res) => {
+  const data = await userModel.find({ role: "Unit Manager" });
+  res.status(200).json({ data });
+};
+export { add, getunitmanger };

@@ -39,7 +39,7 @@ const getTicketall = async (req, res) => {
   res.status(200).json({ Ticket });
 };
 const deleteTicket = async (req, res) => {
-  const Ticket = await TicketModel.findOne({ _id: req.params.id });
+  const Ticket = await TicketModel.findOneAndDelete(req.params.id);
   res.status(200).json({ Ticket });
 };
 
@@ -52,5 +52,22 @@ const getfilterdata = async (req, res) => {
   console.log(finalMenu);
   res.status(200).json({ data: { finalMenu } });
 };
+const statusHandeler = async (req, res) => {
+  const updatedata = await TicketModel.findByIdAndUpdate(
+    req.params.id,
+    {
+      status: req.body.status,
+    },
+    { new: true }
+  );
+  res.status(200).json({ data: { updatedata } });
+};
 
-export { getTicket, deleteTicket, createTicket, getTicketall, getfilterdata };
+export {
+  getTicket,
+  deleteTicket,
+  createTicket,
+  getTicketall,
+  getfilterdata,
+  statusHandeler,
+};
