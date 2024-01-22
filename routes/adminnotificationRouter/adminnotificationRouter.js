@@ -28,6 +28,6 @@ router.get("/super", requireAuth, getSuperAdminNotification);
 router.delete("/super/:id", requireAuth, deletesuperadminnotification);
 router.post("/", createadminnotification);
 
-router.delete("/:id", deleteadminnotification);
+router.delete("/:id", requireAuth, deleteadminnotification);
 
 export default router;

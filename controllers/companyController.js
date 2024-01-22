@@ -1,4 +1,6 @@
+import adminModel from "../models/adminModel/adminModel.js";
 import companyModel from "../models/companyModel.js";
+import userModel from "../models/userModel.js";
 
 const updateCompany = async (req, res) => {
   const {
@@ -34,7 +36,15 @@ const updateCompany = async (req, res) => {
   res.status(200).json({ company });
 };
 const getCompany = async (req, res) => {
-  const company = await companyModel.findOne({ adminId: req.admin.id });
+  let companyname;
+  const data = await userModel.findById(req.user.id);
+  if (data) {
+    companyname = data.companyname;
+  } else {
+    const admin = await adminModel.findById(req.user.id);
+    companyname = admin.companyname;
+  }
+  const company = await companyModel.findOne({ name: companyname });
   res.status(200).json({ company });
 };
 

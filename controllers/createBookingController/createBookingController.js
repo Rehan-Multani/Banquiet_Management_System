@@ -88,6 +88,8 @@ const createbooking = async (req, res) => {
       items,
       chef,
       addGST,
+      address,
+      gst,
       waiter,
     } = req.body;
     console.log(chef, servicedescription, servicename, waiter, items);
@@ -98,11 +100,9 @@ const createbooking = async (req, res) => {
       mobilenumber,
       bookingfrom,
       timestart,
+      address,
       bookingto,
       timeend,
-      numberofguest,
-      eventtypes,
-      servicename,
       orderfinalstatus,
     ];
     const finalItems = JSON.parse(items);
@@ -157,7 +157,8 @@ const createbooking = async (req, res) => {
       const newCustomer = new customerModel({
         email,
         name: customername,
-        address: "India",
+        address,
+        gst,
         mobile: mobilenumber,
         companyname,
         totalOrders: 1,
@@ -249,6 +250,7 @@ const updateBooking = async (req, res) => {
   const {
     customername,
     mobilenumber,
+
     email,
     bookingfrom,
     timestart,
@@ -274,9 +276,6 @@ const updateBooking = async (req, res) => {
     timestart,
     bookingto,
     timeend,
-    numberofguest,
-    eventtypes,
-    servicename,
     orderfinalstatus,
   ];
   const finalItems = JSON.parse(items);
@@ -325,12 +324,20 @@ const updateBooking = async (req, res) => {
         chef: finalChef,
         waiter: finalWaiter,
         totalPrice,
+        remainingPayment: totalPrice,
       },
       { new: true }
     );
     const user = await userModel.findById(req.user.id).select("email");
     sendMail(email, user?.email, "updated", updatedBooking);
-
+    let companyname;
+    const data = await userModel.findById(req.user.id);
+    if (data) {
+      companyname = data.companyname;
+    } else {
+      const admin = await adminModel.findById(req.user.id);
+      companyname = admin.companyname;
+    }
     let adminnotification = await adminNotification.create({
       creatorId: req.user.id,
       message: "Order Updated",
@@ -355,11 +362,13 @@ const updateBooking = async (req, res) => {
 };
 const updateReceivedPayment = async (req, res) => {
   const { id } = req.params;
-  const { remainingPayment } = req.body;
+  const { remainingPayment, mode, reference } = req.body;
   const booking = await bookingModel.findByIdAndUpdate(
     id,
     {
       remainingPayment,
+      mode,
+      reference,
     },
     { new: true }
   );
@@ -370,13 +379,14 @@ const getBooking = async (req, res) => {
     // sendMail();
     const isAdmin = await adminModel.findById(req.user.id);
     let bookings;
+    const isUser = await userModel.findById(req.user.id);
     if (isAdmin) {
       bookings = await bookingModel
         .find({ companyname: isAdmin.companyname })
         .populate("customerid");
     } else {
       bookings = await bookingModel
-        .find({ userbookingid: req.user.id })
+        .find({ companyname: isUser.companyname })
         .populate("customerid");
       console.log(bookings);
     }
@@ -440,5 +450,6 @@ export {
   deleteBooking,
   getsingleBooking,
   getBookingByPage,
+  sendMail,
   updateReceivedPayment,
 };

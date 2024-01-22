@@ -8,13 +8,13 @@ import adminNotification from "../../models/adminnotificationModel/adminnotifica
 import superAdminNotification from "../../models/superAdminNotiModel.js";
 import adminModel from "../../models/adminModel/adminModel.js";
 import companyModel from "../../models/companyModel.js";
-
+import { sendMail } from "../createBookingController/createBookingController.js";
 const createToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: "1yr",
   });
 };
- 
+
 const createadmin = async (req, res) => {
   try {
     const {
@@ -328,20 +328,22 @@ const getdata_C = async (req, res) => {
 const updateconfirmed = async (req, res) => {
   try {
     const orderId = req.params.id;
-    const order = await bookingmodel.findOneAndUpdate(
-      {
-        _id: orderId,
-        orderfinalstatus: "Not Confirmed",
-      },
-      {
-        $set: {
-          orderfinalstatus: "Confirmed",
+    const order = await bookingmodel
+      .findOneAndUpdate(
+        {
+          _id: orderId,
+          orderfinalstatus: "Not Confirmed",
         },
-      },
-      { new: true }
-    );
-
+        {
+          $set: {
+            orderfinalstatus: "Confirmed",
+          },
+        },
+        { new: true }
+      )
+      .populate("userbookingid");
     if (order) {
+      sendMail(order.email, order.userbookingid.email, "Confirmed", order);
       res.status(200).json({
         success: true,
         message: "Order status updated from Not Confirmed to Confirmed",
@@ -596,6 +598,17 @@ const deleteadmin = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+const updateKitchenStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updatedAdmin = await adminModel.findByIdAndUpdate(id, {
+      kitchenEnabled: true,
+    });
+    res.status(201).json({ message: "Update successful" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 export {
   creationrole,
   getalldata,
@@ -614,4 +627,5 @@ export {
   deleteuser,
   updateAdminV2,
   createadminV2,
+  updateKitchenStatus,
 };

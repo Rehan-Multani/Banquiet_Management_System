@@ -7,7 +7,7 @@ import adminModel from "../../models/adminModel/adminModel.js";
 //register user
 const addcustomer = async (req, res) => {
   try {
-    const { name, email, address, mobile } = req.body;
+    const { name, email, address, mobile,gst } = req.body;
 
     // Check if user already exists
     const exists = await Cdata.findOne({ email: email });
@@ -41,6 +41,7 @@ const addcustomer = async (req, res) => {
         email,
         address,
         mobile,
+        gst,
         companyname: isAdmin.companyname,
       });
 

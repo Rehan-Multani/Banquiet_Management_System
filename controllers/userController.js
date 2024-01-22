@@ -120,8 +120,13 @@ const getUser = async (req, res) => {
 };
 const getsaffwaiter = async (req, res) => {
   const id = req.user.id;
+  const isAdmin = await adminModel.findById(req.user.id);
+  let bookings;
+  const isUser = await userModel.findById(req.user.id);
   try {
-    const user = await userModel.find({}).select("-password");
+    const user = await userModel
+      .find({ companyname: isAdmin.companyname || isUser.companyname })
+      .select("-password");
 
     const Waiter = user.filter((item) => {
       return item.role == "Waiter";
@@ -140,11 +145,15 @@ const verifyuser = async (req, res) => {
     const notificationId = req.body.notificationId;
     const user = await userModel.findById(id).select("-password");
 
+    const admin = await adminModel.findById(req.user.id);
+
     user.verify = true;
     await user.save();
 
     await adminNotification.findByIdAndDelete(notificationId);
-    const notifications = await adminNotification.find();
+    const notifications = await adminNotification.find({
+      companyname: admin.companyname,
+    });
     res.status(200).json({ user, notifications });
   } catch (error) {
     res.status(502).json({ message: error.message });

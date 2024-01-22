@@ -4,6 +4,7 @@ const customerSchema = new mongoose.Schema({
   name: { type: String },
   email: { type: String },
   address: { type: String },
+  gst: { type: String },
   mobile: { type: Number },
   companyname: String,
   customerbookingid: {

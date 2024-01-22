@@ -16,6 +16,7 @@ import {
   updateAdmin,
   deleteadmin,
   createadminV2,
+  updateKitchenStatus,
   updateAdminV2,
 } from "../../controllers/adminController/adminController.js";
 import requireAuth from "../../middleware/requireAuth.js";
@@ -66,4 +67,7 @@ router.delete("/deleteuser/:id", requireAuth, deleteuser);
 
 router.post("/v2/createadmin", createadminV2);
 router.put("/v2/update/:id", requireAuth, updateAdminV2);
+
+router.put("/kitchen/:id", requireAuth, updateKitchenStatus);
+
 export default router;

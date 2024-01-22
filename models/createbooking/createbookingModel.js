@@ -40,6 +40,8 @@ const bookingSchema = new mongoose.Schema({
 
   totalPrice: { type: Number },
   addGST: { type: Boolean },
+  mode: String,
+  reference: String,
 });
 
 const bookingModel = mongoose.model("booking", bookingSchema);
