@@ -9,7 +9,8 @@ const add = async (req, res) => {
   try {
     const roledata = await userModel.findOne({ _id: adminid });
     if (roledata.role == "Unit Manager") {
-      let data = await unityModel.findByIdAndUpdate(id, {
+      let data = await unityModel.create({
+        ticketid: id,
         unitid: roledata._id,
         items: JSON.parse(items),
       });
@@ -26,12 +27,14 @@ const add = async (req, res) => {
 };
 
 const getfilterdata = async (req, res) => {
-  const data = await unityModel.find();
+  const data = await unityModel.find().populate("unitid");
 
-  const finaldata = data.filter((item) => !item.qualitymanagerid);
+  const finaldata = data.filter(
+    (item) => !item.qualitymanagerid && item.unitid
+  );
 
   console.log(finaldata);
-  res.status(200).json({ tickets: finaldata });
+  res.status(201).json({ tickets: finaldata });
 };
 
 const remaininggtzero = async (req, res) => {
@@ -66,52 +69,29 @@ const remaininggtzero = async (req, res) => {
 };
 const setdata = async (req, res) => {
   try {
-    const data = await unityModel.find();
+    const { id } = req.params;
+    const data = await unityModel.findById(id);
+    const { items } = req.body;
+    const updatedItems = JSON.parse(items).map((el) => ({
+      name: el.name,
+      quantity: el.quantity,
+      rating: el.rating,
+      remainingQuantity: el.remainingQuantity,
+      qualityRating: el.qualityRating,
+    }));
+    const newUpdated = await TicketModel.findByIdAndUpdate(
+      data.ticketid,
+      {
+        $push: { remaining_quantity: { $each: updatedItems } },
+      },
 
-    // remainingQuantity > 0 logic
-    const filteredData = data.filter((ticket) => {
-      const hasRemainingQuantity = ticket.items.some(
-        (item) => parseInt(item.remainingQuantity) > 0
-      );
-      return hasRemainingQuantity;
+      { new: true }
+    );
+    await unityModel.findByIdAndUpdate(id, {
+      items: JSON.parse(items),
     });
 
-    for (const ticket of filteredData) {
-      const remainingItems = ticket.items.filter(
-        (item) => parseInt(item.remainingQuantity) > 0
-      );
-
-      // Update the ticket in the database
-      await TicketModel.findByIdAndUpdate(ticket.ticketid, {
-        $set: {
-          remaining_quantity: remainingItems.map((item) => ({
-            name: item.name,
-            quantity: item.quantity,
-            rating: item.rating,
-            remaining_quantity: item.remainingQuantity,
-          })),
-        },
-      });
-
-      // Delete items with remaining quantity greater than 0 from unityModel
-      for (const item of ticket.items) {
-        if (parseInt(item.remainingQuantity) > 0) {
-          await unityModel.findByIdAndUpdate(ticket._id, {
-            $pull: { items: { _id: item._id } },
-          });
-        }
-      }
-    }
-
-    // Check if the length == 0, then delete whole data
-    const dataforlength = await unityModel.find();
-    for (const ticket of dataforlength) {
-      if (ticket.items.length === 0) {
-        await unityModel.findByIdAndDelete(ticket._id);
-      }
-    }
-
-    res.status(200).json({ filteredData });
+    res.status(201).json({ newUpdated, message: "successful" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal Server Error" });

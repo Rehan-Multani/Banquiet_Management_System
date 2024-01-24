@@ -36,8 +36,8 @@ const getTicket = async (req, res) => {
 };
 
 const getTicketall = async (req, res) => {
-  const Ticket = await TicketModel.find();
-  res.status(200).json({ Ticket });
+  const tickets = await TicketModel.find();
+  res.status(200).json({ tickets });
 };
 const deleteTicket = async (req, res) => {
   const Ticket = await TicketModel.findOneAndDelete(req.params.id);
@@ -57,11 +57,23 @@ const statusHandeler = async (req, res) => {
   const updatedata = await TicketModel.findByIdAndUpdate(
     req.params.id,
     {
-      status: req.body.status,
+      remaining_quantity: JSON.parse(req.body.items),
     },
     { new: true }
   );
-  res.status(200).json({ data: { updatedata } });
+  res.status(201).json({ data: { updatedata } });
+};
+const getRemainingItems = async (req, res) => {
+  try {
+    const tickets = await TicketModel.find();
+    const finalTickets = tickets.filter(
+      (el) => el.remaining_quantity.length !== 0
+    );
+    return res.status(201).json({ remaining: finalTickets });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 };
 
 export {
@@ -71,4 +83,5 @@ export {
   getTicketall,
   getfilterdata,
   statusHandeler,
+  getRemainingItems,
 };

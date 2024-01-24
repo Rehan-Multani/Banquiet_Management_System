@@ -15,6 +15,7 @@ const TicketSchema = new mongoose.Schema({
       remaining_quantity: { type: String },
       last_update_security: { type: String },
       last_update_kitchen: { type: String },
+      weight: { type: String },
     },
   ],
   remaining_quantity: [
@@ -22,11 +23,12 @@ const TicketSchema = new mongoose.Schema({
       name: { type: String },
       quantity: { type: String },
       rating: { type: String },
-      remaining_quantity: { type: String },
+      remainingQuantity: { type: String },
+      status: String,
+      weight: String,
     },
   ],
   status: { type: String },
-  weight: { type: String },
   comment: { type: String },
 });
 

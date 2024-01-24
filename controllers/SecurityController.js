@@ -9,10 +9,11 @@ const add = async (req, res) => {
     const rolekitchen = await userModel.findOne({ _id: adminid });
     console.log(rolekitchen);
     if (rolekitchen.role == "Security") {
-      let updateweight = await TicketModel.findByIdAndUpdate(
+      const updateweight = await TicketModel.findByIdAndUpdate(
         id,
         {
-          $set: { weight: req.body.weight, securityid: adminid },
+          securityid: rolekitchen._id,
+          items: JSON.parse(req.body.items),
         },
         { new: true }
       );
@@ -40,16 +41,50 @@ const getfilterdata = async (req, res) => {
   const { date } = req.params;
   const menu = await unityModel.find();
   // console.log(menu);
-  const finalMenu = menu.map((item) => {
-    return {
-      _id: item._id,
-      ticketid: item.ticketid,
-      items: item.items,
-      disabled: !item.qualitymanagerid,
-    };
-  });
+  const filtered = menu.filter((el) => !el.unitid);
+  const finalMenu = filtered
+    .map((item) => {
+      const existingUnit = menu.find(
+        (el) =>
+          String(el.unitid) === req.user.id &&
+          String(el.ticketid) === String(item.ticketid)
+      );
+      console.log(existingUnit);
+      if (
+        existingUnit &&
+        existingUnit.items.some((el) => el.remainingQuantity !== "0")
+      ) {
+        return null;
+      }
+      if (existingUnit) {
+        return {
+          _id: existingUnit._id,
+          ticketid: item.ticketid,
+          items: existingUnit.items,
+          quantityDisabled: true,
+          disabled: !existingUnit.qualitymanagerid,
+        };
+      }
+      return {
+        _id: item._id,
+        ticketid: item.ticketid,
+        items: item.items,
+        quantityDisabled: menu.some(
+          (el) =>
+            String(el.unitid) === req.user.id &&
+            String(el.ticketid) === String(item.ticketid)
+        ),
+        disabled: !menu.some(
+          (el) =>
+            !!el.qualitymanagerid &&
+            String(el.unitid) === req.user.id &&
+            String(el.ticketid) === String(item.ticketid)
+        ),
+      };
+    })
+    .filter(Boolean);
 
-  console.log(finalMenu);
+  // console.log(finalMenu);
   res.status(201).json({ tickets: finalMenu });
 };
 

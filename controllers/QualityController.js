@@ -6,14 +6,14 @@ const add = async (req, res) => {
   const { id } = req.params;
   try {
     const rolekitchen = await userModel.findOne({ _id: adminid });
-    console.log(rolekitchen);
+    console.log(JSON.parse(req.body.items));
     if (rolekitchen.role == "Quality Checker") {
       let updatequality = await unityModel.findByIdAndUpdate(
         id,
         {
           $set: {
             qualitymanagerid: adminid,
-            items: req.body.items,
+            items: JSON.parse(req.body.items),
             comment: req.body.comment,
           },
         },
