@@ -1,4 +1,5 @@
 import TicketModel from "../models/TicketModel.js";
+import unityModel from "../models/UnityModel.js";
 import userModel from "../models/userModel.js";
 
 const createTicket = async (req, res) => {
@@ -37,7 +38,35 @@ const getTicket = async (req, res) => {
 
 const getTicketall = async (req, res) => {
   const tickets = await TicketModel.find();
-  res.status(200).json({ tickets });
+  const unitManagers = await userModel.find({ role: "Unit Manager" });
+  const finalTickets = [];
+  const tempUnit = [];
+  for (const ticket of tickets) {
+    for (const unit of unitManagers) {
+      const unitTicket = await unityModel.findOne({
+        ticketid: ticket._id,
+        unitid: unit._id,
+      });
+      if (!unitTicket) {
+        tempUnit.push({ name: unit.name, received: false });
+      } else {
+        tempUnit.push({ name: unit.name, received: true });
+      }
+    }
+    console.log(tempUnit);
+    finalTickets.push({
+      unit: tempUnit.slice(),
+      items: ticket.items,
+      comment: ticket.comment,
+      remaining_quantity: ticket.remaining_quantity,
+      seceurityid: ticket.securityid,
+      kitchenid: ticket.kitchenid,
+      _id: ticket._id,
+    });
+    tempUnit.splice(0, tempUnit.length);
+  }
+  // console.log(finalTickets);
+  res.status(200).json({ tickets: finalTickets });
 };
 const deleteTicket = async (req, res) => {
   const Ticket = await TicketModel.findOneAndDelete(req.params.id);

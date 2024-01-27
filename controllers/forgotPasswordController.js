@@ -21,7 +21,7 @@ const forgotPassword = async (req, res) => {
   await user.save();
 
   //Send email with reset token
-  const resetUrl = `https://subtle-cannoli-9cd809.netlify.app/reset-pw?token=${resetToken}`;
+  const resetUrl = `${process.env.FRONTEND_URL}/reset-pw?token=${resetToken}`;
   // const resetUrl = `http://localhost:3000/reset-pw?token=${resetToken}`;
   console.log(process.env.GMAIL_PASSWORD, process.env.GMAIL_USERNAME);
   var transporter = createTransport({
@@ -33,7 +33,7 @@ const forgotPassword = async (req, res) => {
   });
 
   var mailOptions = {
-    from: "hritikpandey2019@gmail.com",
+    from: "ranjanlamichhanekiaan@gmail.com",
     to: email,
     subject: "Reset Password",
     html: `<h1>Reset Password</h1><h2>Click on the link to reset your password</h2><h3>${resetUrl}</h3>`,

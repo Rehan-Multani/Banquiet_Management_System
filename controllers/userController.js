@@ -104,7 +104,7 @@ const getUser = async (req, res) => {
     const user = await userModel.find({ _id: id });
     if (!user.length) {
       const user = await adminModel.find({ _id: id });
-      console.log(user);
+      // console.log(user);
       if (!user.length && id === "834787584375") {
         return res
           .status(200)

@@ -84,11 +84,11 @@ function isDateBetween(targetDate, startDate, endDate) {
 const getMenuall = async (req, res) => {
   const { date } = req.params;
   const menu = await menuModel.find();
-  console.log(menu);
+  // console.log(menu);
   const finalMenu = menu.find((el) =>
     isDateBetween(date, el.date_from, el.date_to)
   );
-  console.log(finalMenu);
+  // console.log(finalMenu);
   res.status(200).json({ menu: { finalMenu } });
 };
 const deleteMenu = async (req, res) => {
