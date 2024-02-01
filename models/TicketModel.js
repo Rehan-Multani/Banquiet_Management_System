@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 
 const TicketSchema = new mongoose.Schema({
-  adminid: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "adminModel",
+  companyname: {
+    type: String,
+    required: true,
   },
   kitchenid: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   securityid: { type: mongoose.Schema.Types.ObjectId, ref: "User" },

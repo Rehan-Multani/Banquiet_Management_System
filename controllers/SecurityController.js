@@ -24,6 +24,7 @@ const add = async (req, res) => {
       await unityModel.create({
         ticketid: updateweight._id,
         items: unitItems,
+        companyname: rolekitchen.companyname,
       });
       res.status(201).json({ success: true, updateweight });
     } else {
@@ -39,7 +40,9 @@ const add = async (req, res) => {
 
 const getfilterdata = async (req, res) => {
   const { date } = req.params;
-  const menu = await unityModel.find();
+  const { id } = req.user;
+  const user = await userModel.findById(id);
+  const menu = await unityModel.find({ companyname: user.companyname });
   // console.log(menu);
   const filtered = menu.filter((el) => !el.unitid);
   const finalMenu = filtered

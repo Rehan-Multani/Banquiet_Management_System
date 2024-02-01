@@ -1,5 +1,4 @@
 import userModel from "../../models/userModel.js";
-import adminmodel from "../../models/adminModel/adminModel.js";
 import bookingmodel from "../../models/createbooking/createbookingModel.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
@@ -7,6 +6,7 @@ import validator from "validator";
 import adminNotification from "../../models/adminnotificationModel/adminnotificationModel.js";
 import superAdminNotification from "../../models/superAdminNotiModel.js";
 import adminModel from "../../models/adminModel/adminModel.js";
+import adminmodel from "../../models/adminModel/adminModel.js";
 import companyModel from "../../models/companyModel.js";
 import { sendMail } from "../createBookingController/createBookingController.js";
 const createToken = (id) => {
@@ -601,9 +601,10 @@ const deleteadmin = async (req, res) => {
 const updateKitchenStatus = async (req, res) => {
   try {
     const { id } = req.params;
-    const updatedAdmin = await adminModel.findByIdAndUpdate(id, {
-      kitchenEnabled: true,
-    });
+    const admin = await adminModel.findById(id);
+    admin.kitchenEnabled = !admin.kitchenEnabled;
+    await admin.save();
+
     res.status(201).json({ message: "Update successful" });
   } catch (error) {
     res.status(500).json({ message: error.message });

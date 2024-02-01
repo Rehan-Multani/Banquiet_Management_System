@@ -382,11 +382,11 @@ const getBooking = async (req, res) => {
     const isUser = await userModel.findById(req.user.id);
     if (isAdmin) {
       bookings = await bookingModel
-        .find({ companyname: isAdmin.companyname })
+        .find({ companyname: { $regex: new RegExp(`^${isAdmin.companyname}$`, "i") }, })
         .populate("customerid");
     } else {
       bookings = await bookingModel
-        .find({ companyname: isUser.companyname })
+        .find({ companyname: { $regex: new RegExp(`^${isUser.companyname}$`, "i") }, })
         .populate("customerid");
       console.log(bookings);
     }

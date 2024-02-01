@@ -109,10 +109,10 @@ const getcustomer = async (req, res) => {
     const isAdmin = await adminModel.findById(req.user.id);
     let user;
     if (isAdmin) {
-      user = await Cdata.find({ companyname: isAdmin.companyname });
+      user = await Cdata.find({ companyname: { $regex: new RegExp(`^${isAdmin.companyname}$`, "i") }, });
     } else {
       const userOne = await userModel.findById(req.user.id);
-      user = await Cdata.find({ companyname: userOne.companyname });
+      user = await Cdata.find({ companyname: { $regex: new RegExp(`^${userOne.companyname}$`, "i") }, });
     }
     // .populate("userbookingid");
     console.log("user", user);

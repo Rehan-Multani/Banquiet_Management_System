@@ -52,6 +52,15 @@ const registerUser = async (req, res) => {
     if (exists) {
       return res.status(400).json({ message: "User already exists" });
     }
+    const adminExists = await adminModel.findOne({
+      companyname: { $regex: new RegExp(`^${companyname}$`, "i") },
+      verify: true,
+    });
+    if (!adminExists) {
+      return res
+        .status(404)
+        .json({ message: "No admin with such company name exists" });
+    }
     if (
       validator.isEmpty(name) ||
       validator.isEmpty(email) ||

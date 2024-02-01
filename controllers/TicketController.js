@@ -1,5 +1,6 @@
 import TicketModel from "../models/TicketModel.js";
 import unityModel from "../models/UnityModel.js";
+import adminModel from "../models/adminModel/adminModel.js";
 import userModel from "../models/userModel.js";
 
 const createTicket = async (req, res) => {
@@ -11,7 +12,7 @@ const createTicket = async (req, res) => {
 
     if (rolekitchen.role == "Kitchen") {
       const newTicket = new TicketModel({
-        adminid,
+        companyname: rolekitchen.companyname,
         kitchenid: rolekitchen._id,
         items: JSON.parse(items),
         comment,
@@ -37,7 +38,9 @@ const getTicket = async (req, res) => {
 };
 
 const getTicketall = async (req, res) => {
-  const tickets = await TicketModel.find();
+  const { id } = req.user;
+  const admin = await adminModel.findById(id);
+  const tickets = await TicketModel.find({ companyname: admin.companyname });
   const unitManagers = await userModel.find({ role: "Unit Manager" });
   const finalTickets = [];
   const tempUnit = [];

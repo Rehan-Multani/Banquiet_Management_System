@@ -8,7 +8,7 @@ const getAdminNotification = async (req, res) => {
     const admin = await adminModel.findById(req.user.id);
     console.log(admin, "adminnnn");
     const notifications = await adminNotification.find({
-      companyname: admin.companyname,
+      companyname: { $regex: new RegExp(`^${admin.companyname}$`, "i") },
     });
     res.status(200).send({
       success: true,
@@ -60,7 +60,7 @@ const deleteadminnotification = async (req, res) => {
       );
       const admin = await adminModel.findById(req.user.id);
       const notifications = await adminNotification.find({
-        companyname: admin.companyname,
+        companyname: { $regex: new RegExp(`^${admin.companyname}$`, "i") },
       });
       if (notificationToDelete) {
         res.status(200).send({

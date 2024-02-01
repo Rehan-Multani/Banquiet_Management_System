@@ -1,4 +1,5 @@
 import menuModel from "../models/TicketModel.js";
+import userModel from "../models/userModel.js";
 const updateKitchen = async (req, res) => {
   const { id } = req.params;
   const { items } = req.body;
@@ -49,7 +50,9 @@ const updateKitchen = async (req, res) => {
 };
 
 const getfilterdata = async (req, res) => {
-  const data = await menuModel.find();
+  const { id } = req.user;
+  const user = await userModel.findById(id);
+  const data = await menuModel.find({ companyname: user.companyname });
 
   const finaldata = data.filter((item) => {
     return !item.securityid;
