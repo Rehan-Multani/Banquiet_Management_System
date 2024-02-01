@@ -43,12 +43,12 @@ const createMenu = async (req, res) => {
 
 const updateMenu = async (req, res) => {
   const { id } = req.params;
-  const { items } = req.body;
+  const { items, date_from, date_to } = req.body;
 
   try {
     const updatedMenu = await menuModel.findByIdAndUpdate(
       { _id: id },
-      { $set: { items: JSON.parse(items) } },
+      { $set: { items: JSON.parse(items), date_from, date_to } },
       { new: true }
     );
 
@@ -56,7 +56,7 @@ const updateMenu = async (req, res) => {
       return res.status(404).json({ message: "Menu not found" });
     }
 
-    res.json(updatedMenu);
+    res.status(201).json({ success: "true" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal Server Error" });
