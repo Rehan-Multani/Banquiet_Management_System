@@ -13,6 +13,7 @@ const add = async (req, res) => {
         ticketid: id,
         unitid: roledata._id,
         items: JSON.parse(items),
+        companyname: roledata.companyname,
       });
       res.status(201).json({ success: true, data });
     } else {
@@ -27,7 +28,11 @@ const add = async (req, res) => {
 };
 
 const getfilterdata = async (req, res) => {
-  const data = await unityModel.find().populate("unitid");
+  const { id } = req.user;
+  const user = await userModel.findById(id);
+  const data = await unityModel
+    .find({ companyname: user.companyname })
+    .populate("unitid");
 
   const finaldata = data.filter(
     (item) => !item.qualitymanagerid && item.unitid
